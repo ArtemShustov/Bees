@@ -1,5 +1,5 @@
 ﻿namespace Game.Registers {
-	public interface IRegisterItem {
+	public interface IRegistryItem {
 		public string Id { get; }
 	}
 }

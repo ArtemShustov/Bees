@@ -5,25 +5,25 @@ using UnityEngine;
 using System.IO;
 
 namespace GameEditor.Resources {
-	public class ItemRegisterSettingsProvider: SettingsProvider {
-		private ItemRegister _register;
+	public class ItemRegistrySettingsProvider: SettingsProvider {
+		private ItemRegistry _register;
 		private SerializedObject _serialized;
 
-		public ItemRegisterSettingsProvider() : base(ItemRegister.Path, SettingsScope.Project) {
-			_register = AssetDatabase.LoadAssetAtPath<ItemRegister>("Assets/Resources/" + ItemRegister.Path + ".asset");
+		public ItemRegistrySettingsProvider() : base("Registries/Items", SettingsScope.Project) {
+			_register = AssetDatabase.LoadAssetAtPath<ItemRegistry>("Assets/Resources/Registries/" + ItemRegistry.Name + ".asset");
 			if (_register == null) {
-				if (AssetDatabase.IsValidFolder("Assets/Resources") == false) {
+				if (AssetDatabase.IsValidFolder("Assets/Resources/Registries") == false) {
 					AssetDatabase.CreateFolder("Assets", "Resources");
-					AssetDatabase.CreateFolder("Assets/Resources", "Registers");
+					AssetDatabase.CreateFolder("Assets/Resources", "Registries");
 				}
-				AssetDatabase.CreateAsset(ItemRegister.GetInstance(), "Assets/Resources/" + ItemRegister.Path + ".asset");
-				_register = ItemRegister.GetInstance();
+				_register = ScriptableObject.CreateInstance<ItemRegistry>();
+				AssetDatabase.CreateAsset(_register, "Assets/Resources/Registries/" + ItemRegistry.Name + ".asset");
 			}
 		}
 
 		[SettingsProvider]
 		public static SettingsProvider CreateSettingsProvider() {
-			var provider = new ItemRegisterSettingsProvider();
+			var provider = new ItemRegistrySettingsProvider();
 			return provider;
 		}
 		public override void OnActivate(string searchContext, VisualElement rootElement) {
@@ -31,12 +31,12 @@ namespace GameEditor.Resources {
 		}
 		public override void OnGUI(string searchContext) {
 			if (GUILayout.Button("Update from 'Assets/Data/Items'")) {
-				Debug.Log("Updating ItemRegister...");
+				Debug.Log("Updating ItemRegistry...");
 				LoadFromData();
 				_serialized = new SerializedObject(_register);
 			}
 
-			EditorGUILayout.PropertyField(_serialized.FindProperty("_items"));
+			EditorGUILayout.PropertyField(_serialized.FindProperty("_list"));
 			_serialized.ApplyModifiedPropertiesWithoutUndo();
 		}
 
