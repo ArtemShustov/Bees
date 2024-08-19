@@ -1,4 +1,4 @@
-﻿using Game.Registers;
+﻿using Game.Registries;
 
 namespace Game.Resources {
 	public class ItemRegistry: Registry<Item> {

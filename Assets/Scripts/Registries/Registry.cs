@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Game.Registers {
+namespace Game.Registries {
 	[Serializable]
 	public class Registry<T>: ScriptableObject where T: IRegistryItem {
 		[SerializeField] private List<T> _list = new List<T>();

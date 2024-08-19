@@ -1,4 +1,4 @@
-﻿using Game.Registers;
+﻿using Game.Registries;
 using UnityEngine;
 
 namespace Game.Resources {
