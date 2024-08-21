@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Registries {
 	[Serializable]
-	public class Registry<T>: ScriptableObject where T: IRegistryItem {
+	public class Registry<T>: ScriptableObject, IRegistry<T> where T: IRegistryItem {
 		[SerializeField] private List<T> _list = new List<T>();
 
 		public IReadOnlyList<T> List => _list.AsReadOnly();
@@ -20,7 +20,12 @@ namespace Game.Registries {
 				return false;
 			}
 			_list.Add(item);
+			OnItemAdd(item);
 			return true;
+		}
+
+		protected virtual void OnItemAdd(T item) {
+			//
 		}
 	}
 }
