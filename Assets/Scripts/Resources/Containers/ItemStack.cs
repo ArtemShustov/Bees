@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 namespace Game.Resources.Containers {
-	public class ContainerItem {
-		public string Id { get; private set; }
+	public class ItemStack {
+		public Item Item { get; private set; }
 		public int Count { get; private set; }
 
-		public ContainerItem(string id, int count) {
-			Id = id;
+		public ItemStack(Item item, int count = 1) {
+			Item = item;
 			SetCount(count);
 		}
 

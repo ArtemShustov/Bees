@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Resources {
 	[AttributeUsage(AttributeTargets.Field)]
-	public class ItemRegistrySearchAttribute: PropertyAttribute {
+	public class ItemSearchAttribute: PropertyAttribute {
 		//
 	}
 }

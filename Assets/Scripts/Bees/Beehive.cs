@@ -1,10 +1,11 @@
 ﻿using Game.Resources.Containers;
+using Game.Ticking;
 using System;
 using System.Linq;
 using UnityEngine;
 
 namespace Game.Bees {
-	public class Beehive: MonoBehaviour {
+	public class Beehive: MonoBehaviour, ITickable {
 		[Min(1)]
 		[SerializeField] private int _slotsCount = 2;
 		[Min(1)]
@@ -33,17 +34,24 @@ namespace Game.Bees {
 			if (slot.IsFree) {
 				return false;
 			}
+			var instance = GlobalRegistries.Spawners.Get<BeeSpawner>()?.Spawn(slot.Bee);
+			if (instance == null) {
+				return false;
+			}
 			slot.SetBee(null);
 			return true;
 		}
 		private void AddResult(BeeBase bee) {
 			var count = bee.GetOutputCount();
 			if (count > 0) {
-				_container.Add(bee.GetOutput(), count);
+				var item = GlobalRegistries.Items.Get(bee.GetOutput());
+				if (item != null) {
+					_container.Add(item, count);
+				}
 			}
 		}
 
-		private void OnTick() {
+		public void OnTick() {
 			UpdateSlots();
 
 			void UpdateSlots() {
@@ -64,6 +72,12 @@ namespace Game.Bees {
 					}
 				}
 			}
+		}
+		private void OnEnable() {
+			GameTicker.Current.Add(this);
+		}
+		private void OnDisable() {
+			GameTicker.Current.Remove(this);
 		}
 
 		[Serializable]

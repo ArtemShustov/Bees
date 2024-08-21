@@ -6,16 +6,10 @@ namespace Game.Resources.Containers {
 		[field: Min(1)]
 		[field: SerializeField] public int Capacity { get; private set; } = 1;
 
-		private List<ContainerItem> _items = new List<ContainerItem>();
+		private List<ItemStack> _items = new List<ItemStack>();
 
 		public bool Add(Item item, int count) {
-			return Add(item, count);
-		}
-		public bool Add(ContainerItem item) {
-			return Add(item.Id, item.Count);
-		}
-		public bool Add(string id, int count) {
-			var slot = GetSlot(id);
+			var slot = GetSlot(item.Id);
 			if (slot != null) {
 				slot.SetCount(slot.Count + count);
 				return true;
@@ -24,8 +18,11 @@ namespace Game.Resources.Containers {
 			if (_items.Count >= Capacity) {
 				return false;
 			}
-			_items.Add(new ContainerItem(id, count));
+			_items.Add(new ItemStack(item, count));
 			return true;
+		}
+		public bool Add(ItemStack item) {
+			return Add(item.Item, item.Count);
 		}
 		public bool Take(string id, int count) {
 			var slot = GetSlot(id);
@@ -54,8 +51,8 @@ namespace Game.Resources.Containers {
 			return slot == null ? 0 : slot.Count;
 		}
 
-		private ContainerItem GetSlot(string id) {
-			return _items.Find((item) => string.Equals(item.Id, id));
+		private ItemStack GetSlot(string id) {
+			return _items.Find((slot) => string.Equals(slot.Item.Id, id));
 		}
 	}
 }
