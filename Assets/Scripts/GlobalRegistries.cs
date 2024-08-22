@@ -23,7 +23,12 @@ namespace Game {
 		private static T LoadAsset<T>(string path) where T: ScriptableObject {
 			var result = UnityEngine.Resources.Load<T>(path);
 			if (result == null) {
-				ScriptableObject.CreateInstance<T>();
+				result = ScriptableObject.CreateInstance<T>();
+			} else {
+#if UNITY_EDITOR
+				// Create copy of SO, because of fkn unity.
+				result = ScriptableObject.Instantiate(result);
+#endif
 			}
 			return result;
 		}

@@ -1,11 +1,11 @@
 ﻿using Game.Resources.Containers;
-using Game.Ticking;
+using Game.World;
 using System;
 using System.Linq;
 using UnityEngine;
 
 namespace Game.Bees {
-	public class Beehive: MonoBehaviour, ITickable {
+	public class Beehive: Entity {
 		[Min(1)]
 		[SerializeField] private int _slotsCount = 2;
 		[Min(1)]
@@ -34,7 +34,7 @@ namespace Game.Bees {
 			if (slot.IsFree) {
 				return false;
 			}
-			var instance = GlobalRegistries.Spawners.Get<BeeSpawner>()?.Spawn(slot.Bee);
+			var instance = GlobalRegistries.Spawners.Get<BeeSpawner>()?.Spawn(@Level, slot.Bee);
 			if (instance == null) {
 				return false;
 			}
@@ -51,7 +51,8 @@ namespace Game.Bees {
 			}
 		}
 
-		public void OnTick() {
+		public override void OnTick() {
+			Debug.Log("Beehive tick");
 			UpdateSlots();
 
 			void UpdateSlots() {
@@ -72,12 +73,6 @@ namespace Game.Bees {
 					}
 				}
 			}
-		}
-		private void OnEnable() {
-			GameTicker.Current.Add(this);
-		}
-		private void OnDisable() {
-			GameTicker.Current.Remove(this);
 		}
 
 		[Serializable]

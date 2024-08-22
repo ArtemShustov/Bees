@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Ticking {
+namespace Game.World.Ticking {
 	public class TickManager: MonoBehaviour {
 		[field: Min(1)]
 		[field: SerializeField] public int TickRate { get; private set; } = 1;
@@ -9,7 +9,7 @@ namespace Game.Ticking {
 		private List<ITickable> _tickables = new List<ITickable>();
 		private float _timer = 0;
 
-		public float TickTime => 60f / TickRate;
+		public float TickTime => 1f / TickRate;
 
 		private void Update() {
 			_timer += Time.deltaTime;

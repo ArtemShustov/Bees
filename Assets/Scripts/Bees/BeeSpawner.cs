@@ -1,4 +1,5 @@
 ﻿using Game.EntitySpawner;
+using Game.World;
 using UnityEngine;
 
 namespace Game.Bees {
@@ -6,12 +7,15 @@ namespace Game.Bees {
 	public class BeeSpawner: Spawner {
 		[SerializeField] private Bee _prefab;
 
-		public override GameObject Spawn() {
-			return Spawn(null).gameObject;
+		public override GameObject Spawn(Level level) {
+			var instance = Instantiate (_prefab);
+			instance.SetWorld(level);
+			return instance.gameObject;
 		}
-		public Bee Spawn(BeeBase genes) {
+		public Bee Spawn(Level level, BeeBase data) {
 			var instance = Instantiate(_prefab);
-			instance.SetData(genes);
+			instance.SetWorld(level);
+			instance.SetData(data);
 			return instance;
 		}
 	}
