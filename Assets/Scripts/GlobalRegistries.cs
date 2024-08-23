@@ -7,26 +7,27 @@ namespace Game {
 	public class GlobalRegistries {
 		public static ItemRegistry Items { get; private set; }
 		public static GenRegistry Genes { get; private set; }
-		public static SpawnerRegistry Spawners { get; private set; }
+		public static EntityRegistry Entities { get; private set; }
 		
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 		private static void LoadRegistries() {
-			Items = LoadAsset<ItemRegistry>("Registries/" + ItemRegistry.Name);
+			LoadAsset<ItemRegistryAsset>("Registries/" + ItemRegistry.Name).RegisterAll(Items);
 			Debug.Log($"Loaded ItemRegistry with {Items.List.Count} items.");
 
-			Genes = LoadAsset<GenRegistry>("Registries/" + GenRegistry.Name);
+			LoadAsset<GenRegistryAsset>("Registries/" + GenRegistry.Name).RegisterAll(Genes);
 			Debug.Log($"Loaded GenRegistry with {Genes.List.Count} items.");
 
-			Spawners = LoadAsset<SpawnerRegistry>("Registries/" + SpawnerRegistry.Name);
-			Debug.Log($"Loaded SpawnerRegistry with {Spawners.List.Count} items.");
+			LoadAsset<EntityRegistryAsset>("Registries/" + EntityRegistry.Name).RegisterAll(Entities);
+			Debug.Log($"Loaded EntityRegistry with {Entities.List.Count} items.");
 		}
+
 		private static T LoadAsset<T>(string path) where T: ScriptableObject {
 			var result = UnityEngine.Resources.Load<T>(path);
 			if (result == null) {
 				result = ScriptableObject.CreateInstance<T>();
 			} else {
 #if UNITY_EDITOR
-				// Create copy of SO, because of fkn unity.
+				// Create copy of SO, because of unity.
 				result = ScriptableObject.Instantiate(result);
 #endif
 			}

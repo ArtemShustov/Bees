@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adb690aaffc8714da7a5fb5907b59c7, type: 3}
   m_Name: Plutonium comb
   m_EditorClassIdentifier: 
-  <Id>k__BackingField: game.comb.plastic
+  <Id>k__BackingField:
+    <Full>k__BackingField: game:comb_plutonium
   <Icon>k__BackingField: {fileID: 0}

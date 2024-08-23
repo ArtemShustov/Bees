@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Bees {
 	[CreateAssetMenu(menuName = "Spawner/Bee")]
-	public class BeeSpawner: Spawner {
+	public class BeeType: EntityType {
 		[SerializeField] private Bee _prefab;
 
 		public override GameObject Spawn(Level level) {

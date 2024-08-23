@@ -2,10 +2,10 @@
 using System.Linq;
 
 namespace Game.EntitySpawner {
-	public class SpawnerRegistry: Registry<Spawner> {
-		public static readonly string Name = "Spawners";
+	public class EntityRegistry: Registry<EntityType> {
+		public static readonly string Name = "Entities";
 
-		public T Get<T>() where T: Spawner {
+		public T Get<T>() where T: EntityType {
 			return List.FirstOrDefault((item) => item.GetType() == typeof(T)) as T;
 		}
 	}

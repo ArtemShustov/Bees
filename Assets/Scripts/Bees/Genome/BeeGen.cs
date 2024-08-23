@@ -3,6 +3,6 @@ using UnityEngine;
 
 namespace Game.Bees.Genome {
 	public abstract class BeeGen: ScriptableObject, IRegistryItem {
-		[field: SerializeField] public string Id { get; private set; }
+		[field: SerializeField] public Identifier Id { get; private set; }
 	}
 }

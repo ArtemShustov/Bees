@@ -9,7 +9,7 @@ namespace Game.Resources.Containers {
 		private List<ItemStack> _items = new List<ItemStack>();
 
 		public bool Add(Item item, int count) {
-			var slot = GetSlot(item.Id);
+			var slot = GetSlot(item.Id.ToString());
 			if (slot != null) {
 				slot.SetCount(slot.Count + count);
 				return true;
@@ -44,7 +44,7 @@ namespace Game.Resources.Containers {
 		}
 
 		public int GetCount(Item item) {
-			return GetCount(item.Id);
+			return GetCount(item.Id.ToString());
 		}
 		public int GetCount(string id) {
 			var slot = GetSlot(id);

@@ -5,8 +5,9 @@ using Game.Resources;
 namespace GameEditor.Resources {
 	[CustomPropertyDrawer(typeof(ItemSearchAttribute))]
 	public class ItemSearchDrawer: PropertyDrawer {
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {;
 			if (property.propertyType != SerializedPropertyType.String) {
+				EditorGUILayout.HelpBox("Can't display this property", MessageType.Error);
 				return;
 			}
 
@@ -23,7 +24,7 @@ namespace GameEditor.Resources {
 				var selection = EditorGUILayout.ObjectField(temp, typeof(Item), false);
 				if (selection != null) {
 					if (selection is Item item) {
-						property.stringValue = item.Id;
+						property.stringValue = item.Id.ToString();
 					}
 				}
 			}
