@@ -1,4 +1,4 @@
-﻿using Game.EntitySpawner;
+﻿using Game.Entities.Registry;
 using Game.World;
 using UnityEngine;
 

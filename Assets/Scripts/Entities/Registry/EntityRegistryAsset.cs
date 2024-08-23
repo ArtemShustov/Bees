@@ -1,7 +1,7 @@
 ﻿using Game.Registries;
 using UnityEngine;
 
-namespace Game.EntitySpawner {
+namespace Game.Entities.Registry {
 	[CreateAssetMenu(menuName = "Registry/Entities")]
 	public class EntityRegistryAsset: RegistryAsset<EntityType> { }
 }

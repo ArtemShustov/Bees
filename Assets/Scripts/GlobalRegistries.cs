@@ -1,13 +1,13 @@
 ﻿using Game.Bees.Genome;
-using Game.EntitySpawner;
+using Game.Entities.Registry;
 using Game.Resources;
 using UnityEngine;
 
 namespace Game {
 	public class GlobalRegistries {
-		public static ItemRegistry Items { get; private set; }
-		public static GenRegistry Genes { get; private set; }
-		public static EntityRegistry Entities { get; private set; }
+		public static ItemRegistry Items { get; private set; } = new ItemRegistry();
+		public static GenRegistry Genes { get; private set; } = new GenRegistry();
+		public static EntityRegistry Entities { get; private set; } = new EntityRegistry();
 		
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 		private static void LoadRegistries() {

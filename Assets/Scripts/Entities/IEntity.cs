@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Game.World;
+using UnityEngine;
 
-namespace Game.World {
+namespace Game.Entities {
 	public interface IEntity {
 		public void SetWorld(Level level);
 	}

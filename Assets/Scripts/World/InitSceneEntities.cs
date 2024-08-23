@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game.Entities;
+using System;
 using UnityEngine;
 
 namespace Game.World {

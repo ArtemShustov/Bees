@@ -2,7 +2,7 @@
 using Game.World;
 using UnityEngine;
 
-namespace Game.EntitySpawner {
+namespace Game.Entities.Registry {
 	public abstract class EntityType: ScriptableObject, IRegistryItem {
 		[field: SerializeField] public Identifier Id { get; private set; }
 

@@ -1,7 +1,8 @@
-﻿using Game.World.Ticking;
+﻿using Game.World;
+using Game.World.Ticking;
 using UnityEngine;
 
-namespace Game.World {
+namespace Game.Entities {
 	public abstract class Entity: MonoBehaviour, ITickable, IEntity {
 		[field: SerializeField] protected Level Level { get; private set; }
 
@@ -13,9 +14,7 @@ namespace Game.World {
 			}
 		}
 
-		public virtual void OnTick() {
-			// do some cool stuff
-		}
+		public abstract void OnTick();
 
 		protected virtual void OnEnable() {
 			if (Level != null) {

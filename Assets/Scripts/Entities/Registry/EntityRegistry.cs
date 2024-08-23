@@ -1,7 +1,7 @@
 ﻿using Game.Registries;
 using System.Linq;
 
-namespace Game.EntitySpawner {
+namespace Game.Entities.Registry {
 	public class EntityRegistry: Registry<EntityType> {
 		public static readonly string Name = "Entities";
 
