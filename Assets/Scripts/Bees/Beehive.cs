@@ -35,7 +35,8 @@ namespace Game.Bees {
 			if (slot.IsFree) {
 				return false;
 			}
-			var instance = GlobalRegistries.Entities.Get<BeeType>()?.Spawn(@Level, slot.Bee);
+			var instance = GlobalRegistries.Entities.Get<Bee>()?.Spawn(@Level) as Bee;
+			instance.SetData(slot.Bee);
 			if (instance == null) {
 				return false;
 			}

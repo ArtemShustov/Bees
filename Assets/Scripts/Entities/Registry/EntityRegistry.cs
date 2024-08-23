@@ -1,12 +1,35 @@
 ﻿using Game.Registries;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Game.Entities.Registry {
-	public class EntityRegistry: Registry<EntityType> {
+	public class EntityRegistry: IRegistry<EntityType> {
 		public static readonly string Name = "Entities";
 
-		public T Get<T>() where T: EntityType {
-			return List.FirstOrDefault((item) => item.GetType() == typeof(T)) as T;
+		private Dictionary<Type, EntityType> _map = new Dictionary<Type, EntityType>();
+
+		public IReadOnlyCollection<EntityType> List => _map.Values.ToArray(); 
+
+		public Identifier Register(EntityType item) {
+			if (item.Prefab == null) {
+				return null;
+			}
+			var key = item.Prefab.GetType();
+			if (_map.ContainsKey(key) || Get(item.Id) != null) {
+				return null;
+			}
+			_map[key] = item;
+			return item.Id;
+		}
+		public EntityType Get<T>() where T: Entity {
+			return _map.TryGetValue(typeof(T), out var item) ? item : null;
+		}
+		public EntityType Get(string id) {
+			return _map.Values.FirstOrDefault(item => string.Equals(item.Id.ToString(), id));
+		}
+		public EntityType Get(Identifier id) {
+			return _map.Values.FirstOrDefault(item => item.Id.Equals(id));
 		}
 	}
 }
