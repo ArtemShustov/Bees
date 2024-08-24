@@ -36,10 +36,10 @@ namespace Game.Entities {
 		public void SetSpeed(float speed) {
 			Speed = Mathf.Abs(speed);
 		}
-		public void SetTarget(Vector2 point) {
-			SetTarget(new Target(point));
+		public void MoveTo(Vector2 point) {
+			MoveTo(new Target(point));
 		}
-		public void SetTarget(Target target) {
+		public void MoveTo(Target target) {
 			_target = target;
 			NewTarget?.Invoke(_target);
 		}

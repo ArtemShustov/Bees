@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Game.Debugging;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Game.Resources.Containers {
-	public class Container: MonoBehaviour {
+	public class Container: MonoBehaviour, IDebugInfoProvider {
 		[field: Min(1)]
 		[field: SerializeField] public int Capacity { get; private set; } = 1;
 
@@ -52,7 +54,14 @@ namespace Game.Resources.Containers {
 		}
 
 		private ItemStack GetSlot(string id) {
-			return _items.Find((slot) => string.Equals(slot.Item.Id, id));
+			return _items.Find(slot => slot.Item.Id.Equals(id));
+		}
+
+		public void AddInfo(StringBuilder builder) {
+			builder.AppendLine($"Container: capacity {Capacity}");
+			foreach (var slot in _items) {
+				builder.AppendLine($" * {slot.Item.Id} : {slot.Count}");
+			}
 		}
 	}
 }

@@ -67,6 +67,7 @@ namespace GameEditor {
 					AssetDatabase.CreateFolder("Assets/Resources", "Registries");
 				}
 				AssetDatabase.CreateAsset(instance, fullPath);
+				AssetDatabase.SaveAssets();
 			}
 			return instance;
 		}
@@ -91,6 +92,7 @@ namespace GameEditor {
 			}
 			registryAsset.SetList(list.ToArray());
 			Debug.Log($"Registred {list.Count} items");
+			AssetDatabase.SaveAssets();
 		}
 	}
 }

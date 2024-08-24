@@ -13,6 +13,6 @@
 		public abstract void OnTick();
 
 		public abstract bool CanStart();
-		public abstract bool IsRunning();
+		public abstract bool CanContinueRun();
 	}
 }

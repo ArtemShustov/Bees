@@ -25,11 +25,6 @@ namespace Game {
 			var result = UnityEngine.Resources.Load<T>(path);
 			if (result == null) {
 				result = ScriptableObject.CreateInstance<T>();
-			} else {
-#if UNITY_EDITOR
-				// Create copy of SO, because of unity.
-				result = ScriptableObject.Instantiate(result);
-#endif
 			}
 			return result;
 		}

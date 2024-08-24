@@ -5,6 +5,8 @@ namespace Game.Entities.AI {
 		private List<Goal> _goals = new List<Goal>();
 		private Goal _current;
 		
+		public Goal GetCurrent() => _current;
+
 		public void Add(Goal goal) {
 			_goals.Add(goal);
 		}
@@ -12,7 +14,7 @@ namespace Game.Entities.AI {
 			_goals.Remove(goal);
 		}
 		public void OnTick() {
-			if (_current != null && !_current.IsRunning()) {
+			if (_current != null && _current.CanContinueRun() == false) {
 				_current.Stop();
 				_current = null;
 			}

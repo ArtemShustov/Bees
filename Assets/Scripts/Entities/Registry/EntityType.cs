@@ -8,8 +8,9 @@ namespace Game.Entities.Registry {
 		[field: SerializeField] public Identifier Id { get; private set; }
 		[field: SerializeField] public Entity Prefab { get; private set; }
 
-		public Entity Spawn(Level level) {
+		public Entity Spawn(Level level, Vector2 position) {
 			var instance = Instantiate(Prefab);
+			instance.transform.position = position;
 			instance.SetWorld(level);
 			return instance;
 		}

@@ -26,7 +26,7 @@ namespace Game.Entities.Registry {
 			return _map.TryGetValue(typeof(T), out var item) ? item : null;
 		}
 		public EntityType Get(string id) {
-			return _map.Values.FirstOrDefault(item => string.Equals(item.Id.ToString(), id));
+			return _map.Values.FirstOrDefault(item => item.Id.Equals(id));
 		}
 		public EntityType Get(Identifier id) {
 			return _map.Values.FirstOrDefault(item => item.Id.Equals(id));

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e06b96876851f1f43bbaaa7baa68623d, type: 3}
-  m_Name: Beehive
+  m_Name: Bee
   m_EditorClassIdentifier: 
   <Id>k__BackingField:
-    <Full>k__BackingField: game:beehive
-  <Prefab>k__BackingField: {fileID: 8546395879657963895, guid: 32c31d3ba07eb244ca50d018679c8f4a, type: 3}
+    <Full>k__BackingField: game:bee
+  <Prefab>k__BackingField: {fileID: 1996904280425700312, guid: b375db1f6628e0148b9cea9a096f226b, type: 3}

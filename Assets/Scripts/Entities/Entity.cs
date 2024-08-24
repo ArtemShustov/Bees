@@ -14,7 +14,7 @@ namespace Game.Entities {
 			}
 		}
 
-		public abstract void OnTick();
+		public virtual void OnTick() { }
 
 		protected virtual void OnEnable() {
 			if (Level != null) {

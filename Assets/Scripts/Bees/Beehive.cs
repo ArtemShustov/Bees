@@ -1,18 +1,20 @@
-﻿using Game.Entities;
+﻿using Game.Debugging;
+using Game.Entities;
 using Game.Resources.Containers;
-using Game.World;
 using System;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace Game.Bees {
-	public class Beehive: Entity {
+	public class Beehive: Entity, IDebugInfoProvider {
 		[Min(1)]
 		[SerializeField] private int _slotsCount = 2;
 		[Min(1)]
-		[SerializeField] private int _baseWorktime = 60; // in ticks
+		[SerializeField] private int _baseSleeptime = 60; // in ticks
 		[Space]
 		[SerializeField] private Container _container;
+		[SerializeField] private Flower _flower;
 
 		private BeeSlot[] _slots;
 
@@ -35,11 +37,16 @@ namespace Game.Bees {
 			if (slot.IsFree) {
 				return false;
 			}
-			var instance = GlobalRegistries.Entities.Get<Bee>()?.Spawn(@Level) as Bee;
-			instance.SetData(slot.Bee);
+
+			var instance = GlobalRegistries.Entities.Get<Bee>()?.Spawn(@Level, transform.position) as Bee;
 			if (instance == null) {
-				return false;
+				Debug.LogWarning("Entity 'Bee' not found in registry");
+				slot.SetBee(null);
+				return false; 
 			}
+
+			slot.Bee.HasNektar = false;
+			instance.SetData(slot.Bee, this, _flower);
 			slot.SetBee(null);
 			return true;
 		}
@@ -49,12 +56,13 @@ namespace Game.Bees {
 				var item = GlobalRegistries.Items.Get(bee.GetOutput());
 				if (item != null) {
 					_container.Add(item, count);
+				} else {
+					Debug.LogWarning($"Item '{bee.GetOutput()}' not found in registry");
 				}
 			}
 		}
 
 		public override void OnTick() {
-			Debug.Log("Beehive tick");
 			UpdateSlots();
 
 			void UpdateSlots() {
@@ -67,12 +75,21 @@ namespace Game.Bees {
 					}
 
 					slot.OnTick();
-					if (slot.Timer >= _baseWorktime) {
-						var bee = slot.Bee;
-						if (Drop(slot)) {
-							AddResult(bee);
+					if (slot.Timer >= _baseSleeptime) {
+						if (slot.Bee.HasNektar) {
+							AddResult(slot.Bee);
 						}
+						Drop(slot);
 					}
+				}
+			}
+		}
+
+		public void AddInfo(StringBuilder builder) {
+			builder.AppendLine($"Beehive. Slots: {_slots.Length}");
+			foreach (var slot in _slots) {
+				if (slot != null || !slot.IsFree) {
+					builder.AppendLine($"[Slot] SleepTimer: {slot.Timer}/{_baseSleeptime}"); 
 				}
 			}
 		}
@@ -85,12 +102,12 @@ namespace Game.Bees {
 			public bool IsFree => Bee == null;
 
 			public BeeSlot() { Timer = 0; }
-			public BeeSlot(BeeBase? bee) {
+			public BeeSlot(BeeBase bee) {
 				Bee = bee;
 				Timer = 0;
 			}
 
-			public void SetBee(BeeBase? bee) {
+			public void SetBee(BeeBase bee) {
 				Bee = bee;
 				Timer = 0;
 			}

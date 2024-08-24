@@ -6,30 +6,30 @@ namespace Game.Bees {
 	public class Bee: LivingEntity {
 		[field: SerializeField] public BeeBase Data { get; private set; }
 
-		private GoFlowerGoal _flowerGoal;
-		private GoBeehiveGoal _beehiveGoal;
+		[field: SerializeField] public Beehive Home { get; private set; }
+		[field: SerializeField] public Flower Flower { get; private set; }
 
 		protected override void Awake() {
-			_flowerGoal = new GoFlowerGoal(this, 0);
-			GoalSelector.Add(_flowerGoal);
-
-			_beehiveGoal = new GoBeehiveGoal(this, 1);
-			GoalSelector.Add(_beehiveGoal);
+			base.Awake();
+			GoalSelector.Add(new CollectNektarGoal(this, 0));
+			GoalSelector.Add(new GoBeehiveGoal(this, 1));
 		}
 
-		public void SetData(BeeBase genes) {
-			Data = genes;
+		public void SetData(BeeBase beebase, Beehive home, Flower flower) {
+			Data = beebase;
+			Home = home;
+			Flower = flower;
+		}
+		public void ClearHome() {
+			Home = null;
 		}
 
-		private void TryEnterBeehive(Beehive beehive) {
+		public bool TryEnterBeehive(Beehive beehive) {
 			if (beehive.Add(Data)) {
 				Destroy(gameObject);
+				return true;
 			}
-		}
-
-		public override void OnTick() {
-			// do some cool stuff
-			base.OnTick();
+			return false;
 		}
 	}
 }

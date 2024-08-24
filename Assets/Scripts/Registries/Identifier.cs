@@ -3,10 +3,12 @@ using UnityEngine;
 
 namespace Game.Registries {
 	[Serializable]
-	public class Identifier {
+	public class Identifier: IEquatable<Identifier>, IEquatable<string> {
 		[field: SerializeField] public string Full { get; private set; }
 
-
+		public Identifier(string full) { 
+			Full = full;
+		}
 		public Identifier(string domain, string id) {
 			Full = $"{domain}:{id}";
 		}
@@ -14,14 +16,20 @@ namespace Game.Registries {
 		public override string ToString() {
 			return Full;
 		}
+
+		public bool Equals(Identifier other) {
+			if (other == null) return false;
+			return string.Equals(other.ToString(), this.ToString());
+		}
+		public bool Equals(string other) {
+			if (other == null) return false;
+			return string.Equals(other, this.ToString());
+		}
 		public override bool Equals(object obj) {
-			if (obj is Identifier key) {
-				return string.Equals(key.ToString(), this.ToString());
-			}
 			return base.Equals(obj);
 		}
 		public override int GetHashCode() {
-			return HashCode.Combine(Full);
+			return Full.GetHashCode();
 		}
 	}
 }

@@ -6,23 +6,25 @@ using UnityEngine;
 namespace Game.Registries {
 	[Serializable]
 	public class Registry<T>: IRegistry<T> where T: IRegistryItem {
-		[SerializeField] private List<T> _list = new List<T>();
+		[SerializeField] private Dictionary<Identifier, T> _map = new Dictionary<Identifier, T>();
 
-		public IReadOnlyList<T> List => _list.AsReadOnly();
+		public IReadOnlyList<T> List => _map.Values.ToList().AsReadOnly();
 		public T this[Identifier id] => Get(id);
 
 		public T Get(string id) {
-			_list = _list.Where((item) => item != null).ToList();
-			return _list.Find((item) => string.Equals(item.Id, id));
+			return Get(new Identifier(id));
 		}
 		public T Get(Identifier id) {
-			return Get(id.ToString());
+			return _map.TryGetValue(id, out var item) ? item : default;
+		}
+		public bool Contains(Identifier id) {
+			return _map.ContainsKey(id);
 		}
 		public Identifier Register(T item) {
-			if (Get(item.Id.ToString()) != null) {
+			if (Contains(item.Id)) {
 				return null;
 			}
-			_list.Add(item);
+			_map.Add(item.Id, item);
 			OnItemAdd(item);
 			return item.Id;
 		}
