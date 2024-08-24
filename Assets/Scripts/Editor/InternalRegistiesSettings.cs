@@ -10,12 +10,12 @@ using UnityEngine.UIElements;
 
 namespace GameEditor {
 	public class InternalRegistiesSettings: SettingsProvider {
-		private ItemRegistryAsset _items;
-		private GenRegistryAsset _genes;
-		private EntityRegistryAsset _entities;
+		private InternalRegistry<Item> _items;
+		private InternalRegistry<BeeGen> _genes;
+		private InternalRegistry<EntityType> _entities;
 
 		public InternalRegistiesSettings() : base("Registries/Internal", SettingsScope.Project) {
-			//
+			// 
 		}
 
 		[SettingsProvider]
@@ -24,36 +24,38 @@ namespace GameEditor {
 			return provider;
 		}
 		public override void OnActivate(string searchContext, VisualElement rootElement) {
-			_items = GetAsset<ItemRegistryAsset>(ItemRegistry.Name);
-			_genes = GetAsset<GenRegistryAsset>(GenRegistry.Name);
-			_entities = GetAsset<EntityRegistryAsset>(EntityRegistry.Name);
+			_items = new InternalRegistry<Item>(GetAsset<ItemRegistryAsset>(ItemRegistry.Name), "Assets/Data/Items");
+			_genes = new InternalRegistry<BeeGen>(GetAsset<GenRegistryAsset>(GenRegistry.Name), "Assets/Data/Genes");
+			_entities = new InternalRegistry<EntityType>(GetAsset<EntityRegistryAsset>(EntityRegistry.Name), "Assets/Data/Entities");
 		}
 		public override void OnGUI(string searchContext) {
 			EditorGUILayout.HelpBox("Work in progress", MessageType.Warning);
 
-			DrawAssetList(_items);
-			DrawLoadButton(_items, "Assets/Data/Items");
-			
-			DrawAssetList(_genes);
-			DrawLoadButton(_genes, "Assets/Data/Genes");
-
-			DrawAssetList(_entities);
-			DrawLoadButton(_entities, "Assets/Data/Entities");
+			DrawInternalRegistry(_items);
+			DrawInternalRegistry(_genes);
+			DrawInternalRegistry(_entities);
 		}
 
-		private void DrawLoadButton<T>(RegistryAsset<T> asset, string path) where T : IRegistryItem {
-			if (GUILayout.Button($"Update from '{path}'")) {
-				UpdateAsset(asset, path);
+		private void DrawInternalRegistry<T>(InternalRegistry<T> internalRegistry) where T: IRegistryItem {
+			DrawAssetList(internalRegistry);
+			DrawLoadButton(internalRegistry);
+		}
+ 		private void DrawLoadButton<T>(InternalRegistry<T> internalRegistry) where T : IRegistryItem {
+			if (GUILayout.Button($"Update from '{internalRegistry.DataPath}'")) {
+				UpdateAsset(internalRegistry.Asset, internalRegistry.DataPath);
 			}
 		}
-		private void DrawAssetList<T>(RegistryAsset<T> asset) where T : IRegistryItem {
+		private void DrawAssetList<T>(InternalRegistry<T> internalRegistry) where T: IRegistryItem {
 			EditorGUILayout.Separator();
 
-			var serializedObject = new SerializedObject(asset);
-			var property = serializedObject.FindProperty("_list");
-			EditorGUILayout.LabelField(asset.GetType().ToString());
+			internalRegistry.Serialized.Update();
+			var property = internalRegistry.Serialized.FindProperty("_list");
+			EditorGUILayout.LabelField(internalRegistry.Asset.GetType().ToString());
 			EditorGUILayout.PropertyField(property);
+
+			internalRegistry.Serialized.ApplyModifiedPropertiesWithoutUndo();
 		}
+
 		private T GetAsset<T>(string name) where T : ScriptableObject {
 			var fullPath = "Assets/Resources/Registries/" + name + ".asset";
 
@@ -92,7 +94,19 @@ namespace GameEditor {
 			}
 			registryAsset.SetList(list.ToArray());
 			Debug.Log($"Registred {list.Count} items");
+			EditorUtility.SetDirty(registryAsset);
 			AssetDatabase.SaveAssets();
+		}
+	}
+	public class InternalRegistry<T> where T: IRegistryItem {
+		public RegistryAsset<T>  Asset { get; private set; }
+		public SerializedObject Serialized { get ; private set; }
+		public string DataPath { get; private set; }
+
+		public InternalRegistry(RegistryAsset<T> asset, string dataPath) {
+			Asset = asset;
+			Serialized = new SerializedObject(asset);
+			DataPath = dataPath;
 		}
 	}
 }
