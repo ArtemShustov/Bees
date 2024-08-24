@@ -7,8 +7,6 @@ namespace Game.World.Ticking {
 		[field: SerializeField] public int TickRate { get; private set; } = 1;
 
 		private List<ITickable> _tickables = new List<ITickable>();
-		private List<ITickable> _toRemove = new List<ITickable>();
-		private List<ITickable> _toAdd = new List<ITickable>();
 		private float _timer = 0;
 
 		public float TickTime => 1f / TickRate;
@@ -22,27 +20,17 @@ namespace Game.World.Ticking {
 		}
 
 		public void Add(ITickable tickable) {
-			_toAdd.Add(tickable);
+			_tickables.Add(tickable);
 		}
 		public void Remove(ITickable tickable) {
-			_toRemove.Add(tickable);
+			_tickables.Remove(tickable);
 		}
 
 		private void Tick() {
-			// add all
-			foreach (ITickable tickable in _toAdd) {
-				_tickables.Add(tickable);
-			}
-			_toAdd.Clear();
-			// tick all
-			foreach (ITickable tickable in _tickables) {
+			var tickables = new List<ITickable>(_tickables);
+			foreach (ITickable tickable in tickables) {
 				tickable?.OnTick();
 			}
-			// remove
-			foreach (ITickable tickable in _toRemove) {
-				_tickables.Remove(tickable);
-			}
-			_toRemove.Clear();
 		}
 	}
 }
