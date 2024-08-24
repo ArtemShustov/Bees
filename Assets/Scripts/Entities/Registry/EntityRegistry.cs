@@ -31,5 +31,8 @@ namespace Game.Entities.Registry {
 		public EntityType Get(Identifier id) {
 			return _map.Values.FirstOrDefault(item => item.Id.Equals(id));
 		}
+		public Identifier IdentifierOf(string id) {
+			return List.FirstOrDefault(item => item.Id.Equals(id))?.Id;
+		}
 	}
 }

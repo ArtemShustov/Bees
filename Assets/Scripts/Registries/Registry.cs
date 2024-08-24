@@ -28,6 +28,9 @@ namespace Game.Registries {
 			OnItemAdd(item);
 			return item.Id;
 		}
+		public Identifier IdentifierOf(string id) {
+			return List.FirstOrDefault(item => item.Id.Equals(id))?.Id;
+		}
 
 		protected virtual void OnItemAdd(T item) {
 			//

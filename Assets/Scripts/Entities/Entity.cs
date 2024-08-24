@@ -7,11 +7,9 @@ namespace Game.Entities {
 		[field: SerializeField] protected Level Level { get; private set; }
 
 		public void SetWorld(Level level) {
-			Level?.TickManager.Remove(this);
+			Level?.Remove(this);
 			Level = level;
-			if (gameObject.activeSelf) {
-				Level.TickManager.Add(this);
-			}
+			Level.Add(this);
 		}
 
 		public virtual void OnTick() { }

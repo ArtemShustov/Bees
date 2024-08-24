@@ -1,4 +1,5 @@
-﻿using Game.World.Ticking;
+﻿using Game.Entities;
+using Game.World.Ticking;
 using UnityEngine;
 
 namespace Game.World {
@@ -9,5 +10,16 @@ namespace Game.World {
 		private void Awake() {
 			TickManager = GetComponent<TickManager>();
 		}
-	}
+		
+		public void Add(IEntity entity) { 
+			if (entity is ITickable tickable) {
+				TickManager.Add(tickable);
+			}
+		}
+		public void Remove(IEntity entity) {
+			if (entity is ITickable tickable) {
+				TickManager.Remove(tickable);
+			}
+		}
+ 	}
 }

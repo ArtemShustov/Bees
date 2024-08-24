@@ -3,5 +3,6 @@
 		public T Get(string id);
 		public T Get(Identifier id);
 		public Identifier Register(T item);
+		public Identifier IdentifierOf(string id);
 	}
 }
