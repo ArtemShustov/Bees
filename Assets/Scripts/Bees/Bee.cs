@@ -62,8 +62,8 @@ namespace Game.Bees {
 			}
 			base.OnTick();
 		}
-		public override void AddInfo(StringBuilder builder) {
-			base.AddInfo(builder);
+		public override void AddDebugInfo(StringBuilder builder) {
+			base.AddDebugInfo(builder);
 			builder.AppendLine($" * WorkCooldown: {BeehiveCooldown}");
 			builder.AppendLine($" * Has nektar: {HasNektar}");
 		}

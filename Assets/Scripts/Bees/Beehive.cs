@@ -96,7 +96,7 @@ namespace Game.Bees {
 			}
 		}
 
-		public void AddInfo(StringBuilder builder) {
+		public void AddDebugInfo(StringBuilder builder) {
 			builder.AppendLine($"Beehive. Slots: {_slots.Length}");
 			foreach (var slot in _slots) {
 				if (slot != null || !slot.IsFree) {

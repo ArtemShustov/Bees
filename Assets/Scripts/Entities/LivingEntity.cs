@@ -18,11 +18,11 @@ namespace Game.Entities {
 			GoalSelector.OnTick();
 		}
 
-		public virtual void AddInfo(StringBuilder builder) {
+		public virtual void AddDebugInfo(StringBuilder builder) {
 			builder.AppendLine($"Living entity: {this.GetType()} ({this.GetGUID()})");
 			builder.AppendLine($" * Goal: {GoalSelector?.GetCurrent()?.GetType()}");
 			if (GoalSelector?.GetCurrent() is IDebugInfoProvider goal) {
-				goal.AddInfo(builder);
+				goal.AddDebugInfo(builder);
 			}
 		}
 	}

@@ -46,7 +46,7 @@ namespace Game.Bees.AI {
 			return (_bee.HasNektar == false) && (_bee.Flower != null);
 		}
 
-		public void AddInfo(StringBuilder builder) {
+		public void AddDebugInfo(StringBuilder builder) {
 			builder.AppendLine($" * Collecting timer: {Timer}/{_collectingTime}");
 		}
 	}

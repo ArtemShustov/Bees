@@ -2,6 +2,6 @@
 
 namespace Game.Debugging {
 	public interface IDebugInfoProvider {
-		public void AddInfo(StringBuilder builder);
+		public void AddDebugInfo(StringBuilder builder);
 	}
 }

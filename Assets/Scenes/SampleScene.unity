@@ -345,7 +345,6 @@ MonoBehaviour:
   _base:
     <ProductGen>k__BackingField: {fileID: 11400000, guid: 37a4d6bd54bbad54486abf5a45386529, type: 2}
     <EfficiencyGen>k__BackingField: {fileID: 11400000, guid: 95202486e8b83d14f94a3d888c661c5e, type: 2}
-    <HasNektar>k__BackingField: 0
   _home: {fileID: 0}
   _flower: {fileID: 0}
   _level: {fileID: 1215005667}
@@ -449,6 +448,64 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0707cfd9789a82c44bf6be21611ab051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &2078313593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2078313595}
+  - component: {fileID: 2078313597}
+  - component: {fileID: 2078313596}
+  m_Layer: 0
+  m_Name: TEST
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2078313595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078313593}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2078313596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078313593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea2aeb639aab194bac76d3c27c5bd7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Level>k__BackingField: {fileID: 0}
+--- !u!114 &2078313597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078313593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56f4f967fcbfa04ca3b96967e427aab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3342769381621081216

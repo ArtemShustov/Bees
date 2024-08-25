@@ -57,7 +57,7 @@ namespace Game.Resources.Containers {
 			return _items.Find(slot => slot.Item.Id.Equals(id));
 		}
 
-		public void AddInfo(StringBuilder builder) {
+		public void AddDebugInfo(StringBuilder builder) {
 			builder.AppendLine($"Container: capacity {Capacity}");
 			foreach (var slot in _items) {
 				builder.AppendLine($" * {slot.Item.Id} : {slot.Count}");

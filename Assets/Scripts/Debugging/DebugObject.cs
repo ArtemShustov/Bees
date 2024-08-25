@@ -7,7 +7,7 @@ namespace Game.Debugging {
 			var builder = new StringBuilder();
 			var providers = GetComponents<IDebugInfoProvider>();
 			foreach (var provider in providers) {
-				provider.AddInfo(builder);
+				provider.AddDebugInfo(builder);
 			}
 			return builder.ToString();
 		}
