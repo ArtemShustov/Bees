@@ -30,7 +30,7 @@ namespace Game.Bees.AI {
 		}
 
 		public override bool CanStart() {
-			return _bee.Home != null;
+			return (_bee.Home != null) && (_bee.BeehiveCooldown <= 0);
 		}
 		public override bool CanContinueRun() {
 			return _bee.Home != null;

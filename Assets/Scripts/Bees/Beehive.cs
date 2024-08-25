@@ -12,25 +12,26 @@ namespace Game.Bees {
 		[SerializeField] private int _slotsCount = 2;
 		[Min(1)]
 		[SerializeField] private int _baseSleeptime = 60; // in ticks
+		[SerializeField] private float _findRadius = 100;
 		[Space]
 		[SerializeField] private Container _container;
-		[SerializeField] private Flower _flower;
 
 		private BeeSlot[] _slots;
 
-		private void Awake() {
+		protected override void Awake() {
+			base.Awake();
 			_slots = new BeeSlot[_slotsCount];
 			for (int i = 0; i < _slots.Length; i++) {
 				_slots[i] = new BeeSlot();
 			}
 		}
 
-		public bool Add(BeeBase bee) {
+		public bool Add(BeeBase bee, bool hasNektar) {
 			var slot = _slots.First((slot) => slot.IsFree);
 			if (slot == null) {
 				return false;
 			}
-			slot.SetBee(bee);
+			slot.SetBee(bee, hasNektar);
 			return true;
 		}
 		private bool Drop(BeeSlot slot) {
@@ -38,18 +39,28 @@ namespace Game.Bees {
 				return false;
 			}
 
-			var instance = GlobalRegistries.Entities.Get<Bee>()?.Spawn(@Level, transform.position) as Bee;
+			var flower = GetFlower();
+
+			var instance = Level.Spawn<Bee>(transform.position);
 			if (instance == null) {
-				Debug.LogWarning("Entity 'Bee' not found in registry");
-				slot.SetBee(null);
+				Debug.LogWarning("Can't spawn Bee.");
+				slot.SetBee(null, false);
 				return false; 
 			}
-
-			slot.Bee.HasNektar = false;
-			instance.SetData(slot.Bee, this, _flower);
-			slot.SetBee(null);
+			instance.SetData(slot.Bee, this, flower);
+			slot.SetBee(null, false);
 			return true;
 		}
+
+		private Flower GetFlower() {
+			var flowers = Level.EntitiesList.FindInRadius<Flower>(transform.position, _findRadius);
+			if (flowers.Length == 0) {
+				return null;
+			}
+			var flower = flowers[UnityEngine.Random.Range(0, flowers.Length)];
+			return flower;
+		}
+
 		private void AddResult(BeeBase bee) {
 			var count = bee.GetOutputCount();
 			if (count > 0) {
@@ -76,7 +87,7 @@ namespace Game.Bees {
 
 					slot.OnTick();
 					if (slot.Timer >= _baseSleeptime) {
-						if (slot.Bee.HasNektar) {
+						if (slot.HasNektar) {
 							AddResult(slot.Bee);
 						}
 						Drop(slot);
@@ -98,18 +109,21 @@ namespace Game.Bees {
 		private class BeeSlot {
 			public BeeBase Bee { get; private set; }
 			public int Timer { get; private set; } = 0;
+			public bool HasNektar { get; private set; } = false;
 
 			public bool IsFree => Bee == null;
 
 			public BeeSlot() { Timer = 0; }
-			public BeeSlot(BeeBase bee) {
+			public BeeSlot(BeeBase bee, bool hasNektar) {
 				Bee = bee;
 				Timer = 0;
+				HasNektar = hasNektar;
 			}
 
-			public void SetBee(BeeBase bee) {
+			public void SetBee(BeeBase bee, bool hasNektar) {
 				Bee = bee;
 				Timer = 0;
+				HasNektar = hasNektar;
 			}
 
 			public void OnTick() {

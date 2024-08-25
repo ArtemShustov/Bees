@@ -13,18 +13,13 @@ namespace Game.Entities {
 		public event Action<Target> NewTarget;
 		public event Action<Target> TargetReached;
 
-		private void Update() {
-			if (Input.GetMouseButtonDown(0)) {
-				Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				_target = new Target(point);
-			}
-		}
 		private void FixedUpdate() {
 			if (_target != null) {
 				var toTarget = _target.Point - (Vector2)transform.position;
 				if (toTarget.sqrMagnitude == 0) {
-					TargetReached?.Invoke(_target);
+					var target = _target;
 					_target = null;
+					TargetReached?.Invoke(target);
 					return;
 				}
 

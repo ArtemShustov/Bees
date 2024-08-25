@@ -9,7 +9,8 @@ namespace Game.Entities {
 		[field: SerializeField] public EntityMovement Movement { get; private set; }
 		[field: SerializeField] public GoalSelector GoalSelector { get; private set; } = new GoalSelector();
 
-		protected virtual void Awake() {
+		protected override void Awake() {
+			base.Awake();
 			Movement = GetComponent<EntityMovement>();
 		}
 
@@ -17,8 +18,8 @@ namespace Game.Entities {
 			GoalSelector.OnTick();
 		}
 
-		public void AddInfo(StringBuilder builder) {
-			builder.AppendLine($"Living entity: {this.GetType()}");
+		public virtual void AddInfo(StringBuilder builder) {
+			builder.AppendLine($"Living entity: {this.GetType()} ({this.GetGUID()})");
 			builder.AppendLine($" * Goal: {GoalSelector?.GetCurrent()?.GetType()}");
 			if (GoalSelector?.GetCurrent() is IDebugInfoProvider goal) {
 				goal.AddInfo(builder);

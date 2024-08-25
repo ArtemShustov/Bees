@@ -8,8 +8,6 @@ namespace Game.Bees {
 		[field: SerializeField] public ProductGen ProductGen { get; private set; }
 		[field: SerializeField] public ProductivityGen EfficiencyGen { get; private set; }
 
-		[field: SerializeField] public bool HasNektar { get; set; }
-
 		public string GetOutput() {
 			return ProductGen.Resource;
 		}

@@ -33,17 +33,17 @@ namespace Game.Bees.AI {
 				Timer += 1;
 			}
 			if (Timer >= _collectingTime) { 
-				_bee.Data.HasNektar = true;
+				_bee.HasNektar = true;
 				return;
 			}
 			base.OnTick();
 		}
 
 		public override bool CanStart() {
-			return (_bee.Data.HasNektar == false) && (_bee.Flower != null);
+			return (_bee.HasNektar == false) && (_bee.Flower != null);
 		}
 		public override bool CanContinueRun() {
-			return (_bee.Data.HasNektar == false) && (_bee.Flower != null);
+			return (_bee.HasNektar == false) && (_bee.Flower != null);
 		}
 
 		public void AddInfo(StringBuilder builder) {
