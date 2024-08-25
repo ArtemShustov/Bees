@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
 namespace Game.Serialization {
 	public static class MemoryStreamExtensions {
@@ -25,6 +26,13 @@ namespace Game.Serialization {
 			var array = value.ToByteArray();
 			stream.Write(array);
 			return array.Length;
+		}
+		public static void WriteFloat(this MemoryStream stream, float value) {
+			stream.Write(BitConverter.GetBytes(value));
+		}
+		public static void WriteVector2(this MemoryStream stream, Vector2 value) {
+			stream.WriteFloat(value.x);
+			stream.WriteFloat(value.y);
 		}
 
 		public static int ReadInt32(this MemoryStream stream) {
@@ -51,6 +59,16 @@ namespace Game.Serialization {
 			var array = new byte[16];
 			stream.Read(array);
 			return new Guid(array);
+		}
+		public static float ReadFloat(this MemoryStream stream) {
+			var array = new byte[4];
+			stream.Read(array, 0, 4);
+			return BitConverter.ToSingle(array, 0);
+		}
+		public static Vector2 ReadVector2(this MemoryStream stream) {
+			var x = stream.ReadFloat();
+			var y = stream.ReadFloat();
+			return new Vector2(x, y);
 		}
 	}
 }

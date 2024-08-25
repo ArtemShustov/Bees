@@ -1,10 +1,11 @@
-﻿using Game.World;
+﻿using Game.Serialization.DataTags;
+using Game.World;
 using Game.World.Ticking;
 using System;
 using UnityEngine;
 
 namespace Game.Entities {
-	public abstract class Entity: MonoBehaviour, ITickable, IEntity {
+	public abstract class Entity: MonoBehaviour, ITickable, IEntity, ITagSerializable<EntityTag> {
 		[field: SerializeField] public Level Level { get; private set; }
 
 		private Guid _guid;
@@ -19,6 +20,20 @@ namespace Game.Entities {
 			Level.Add(this);
 		}
 		public Guid GetGUID() => _guid;
+
+		public void WriteData(EntityTag tag) {
+			tag.Position = transform.position;
+			tag.Guid = _guid;
+			WriteAdditionalData(tag.AdditionalData);
+		}
+		public void ReadData(EntityTag tag) {
+			transform.position = tag.Position;
+			_guid = tag.Guid;
+			ReadAdditionalData(tag.AdditionalData);
+		}
+
+		protected virtual void WriteAdditionalData(CompoundedTag tag) { }
+		protected virtual void ReadAdditionalData(CompoundedTag tag) { }
 
 		public virtual void OnTick() { }
 

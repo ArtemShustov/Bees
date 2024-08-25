@@ -22,6 +22,9 @@ namespace Game.Entities.Registry {
 			_map[key] = item;
 			return item.Id;
 		}
+		public EntityType Get(Type type) {
+			return _map.TryGetValue(type, out var item) ? item : null;
+		}
 		public EntityType Get<T>() where T: Entity {
 			return _map.TryGetValue(typeof(T), out var item) ? item : null;
 		}

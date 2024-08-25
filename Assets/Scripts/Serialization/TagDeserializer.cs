@@ -10,6 +10,7 @@ namespace Game.Serialization {
 				StringTag.TagType => StringTag.Create(bytes),
 				BoolTag.TagType => BoolTag.Create(bytes),
 				CompoundedTag.TagType => CompoundedTag.Create(bytes),
+				EntityTag.TagType => EntityTag.Create(bytes),
 				_ => null,
 			};
 		}
@@ -20,6 +21,7 @@ namespace Game.Serialization {
 				StringTag.TagType => typeof(StringTag),
 				BoolTag.TagType => typeof(BoolTag),
 				CompoundedTag.TagType => typeof(CompoundedTag),
+				EntityTag.TagType => typeof(EntityTag),
 				_ => null,
 			};
 		}
