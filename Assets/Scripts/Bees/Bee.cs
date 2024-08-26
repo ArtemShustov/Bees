@@ -2,22 +2,25 @@
 using Game.Debugging;
 using Game.Entities;
 using Game.Entities.AI;
+using Game.Serialization.DataTags;
 using Game.World;
+using System;
 using System.Text;
 using UnityEngine;
 
 namespace Game.Bees {
 	public class Bee: LivingEntity, IDebugInfoProvider {
-		[field: SerializeField] public BeeBase Data { get; private set; }
+		[SerializeField] private int _baseCooldown = 200;
+
+		public BeeBase Data { get; private set; }
+		private TrackedEntity<Beehive> _home;
+		private TrackedEntity<Flower> _flower;
+
+		public int BeehiveCooldown { get; private set; } = 0;
+		public bool HasNektar { get; set; } = false;
 
 		public Beehive Home => _home?.Get();
 		public Flower Flower => _flower?.Get();
-
-		public int BeehiveCooldown { get; private set; } = 0; // add data
-		public bool HasNektar { get; set; } = false; // add data
-
-		private TrackedEntity<Beehive> _home;
-		private TrackedEntity<Flower> _flower;
 
 		protected override void Awake() {
 			ResetBeehiveCooldown();
@@ -42,7 +45,7 @@ namespace Game.Bees {
 			_home = new TrackedEntity<Beehive>(Level, beehive);
 		}
 		public void ResetBeehiveCooldown() {
-			BeehiveCooldown = 600;
+			BeehiveCooldown = _baseCooldown;
 		}
 
 		public bool TryEnterBeehive(Beehive beehive) {
@@ -62,10 +65,40 @@ namespace Game.Bees {
 			}
 			base.OnTick();
 		}
+		
+		protected override void WriteAdditionalData(CompoundedTag tag) {
+			base.WriteAdditionalData(tag);
+			tag.Add(new IntTag(nameof(BeehiveCooldown), BeehiveCooldown));
+			tag.Add(new BoolTag(nameof(HasNektar), HasNektar));
+			var data = BeeBaseSerializator.ToTag(nameof(Data), Data);
+			tag.Add(data);
+			tag.Add(new GuidTag(nameof(_home), _home.GUID));
+			tag.Add(new GuidTag(nameof(_flower), _flower.GUID));
+		}
+		protected override void ReadAdditionalData(CompoundedTag tag) {
+			base.ReadAdditionalData(tag);
+			BeehiveCooldown = tag.Get<IntTag>("BeehiveCooldown")?.Value ?? 0;
+			HasNektar = tag.Get<BoolTag>("HasNektar")?.Value ?? false;
+			var dataTag = tag.Get<CompoundedTag>("Data");
+			Data = dataTag != null ? BeeBaseSerializator.FromTag(Level.GenRegistry, dataTag) : null;
+			
+			var home = tag.Get<GuidTag>(nameof(_home))?.Value ?? Guid.Empty;
+			if (home != Guid.Empty) {
+				_home = new TrackedEntity<Beehive>(Level, home);
+			}
+			var flower = tag.Get<GuidTag>(nameof(_flower))?.Value ?? Guid.Empty;
+			if (home != Guid.Empty) {
+				_flower = new TrackedEntity<Flower>(Level, flower);
+			}
+		}
+
 		public override void AddDebugInfo(StringBuilder builder) {
 			base.AddDebugInfo(builder);
-			builder.AppendLine($" * WorkCooldown: {BeehiveCooldown}");
+			builder.AppendLine($" * BeehiveCooldown: {BeehiveCooldown}");
 			builder.AppendLine($" * Has nektar: {HasNektar}");
+			builder.AppendLine($" * Product: {Data?.ProductGen?.Id}");
+			builder.AppendLine($" * Flower: {Flower?.GetGUID()}");
+			builder.AppendLine($" * Home: {Home?.GetGUID()}");
 		}
 	}
 }

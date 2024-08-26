@@ -8,6 +8,8 @@ namespace Game.World {
 	public class EntitiesList: MonoBehaviour {
 		private List<IEntity> _entities = new List<IEntity>();
 
+		public IReadOnlyList<IEntity> List => _entities;
+
 		public void Track(IEntity entity) {
 			_entities.Add(entity);
 		}

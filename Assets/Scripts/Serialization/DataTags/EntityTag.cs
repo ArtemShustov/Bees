@@ -16,7 +16,7 @@ namespace Game.Serialization.DataTags {
 		public EntityTag(string name, string id) {
 			Name = name;
 			Id = id;
-			AdditionalData = new CompoundedTag(name);
+			AdditionalData = new CompoundedTag("additional");
 		}
 		public EntityTag(string name, string id, Guid guid, Vector2 position, CompoundedTag additionalData) {
 			Name = name;

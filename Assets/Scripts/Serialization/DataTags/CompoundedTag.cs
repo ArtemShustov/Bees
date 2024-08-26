@@ -37,6 +37,9 @@ namespace Game.Serialization.DataTags {
 				stream.WriteStringWithLength(Name);
 				stream.WriteInt32(_list.Count);
 				foreach (var tag in _list) {
+					if (tag == null) {
+						continue;
+					}
 					var tagArray = tag.Serialize();
 					stream.WriteInt32(tagArray.Length);
 					stream.Write(tagArray);

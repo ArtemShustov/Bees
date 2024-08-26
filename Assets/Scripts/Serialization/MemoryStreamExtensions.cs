@@ -9,7 +9,7 @@ namespace Game.Serialization {
 			stream.Write(BitConverter.GetBytes(value));
 		}
 		public static void WriteStringWithLength(this MemoryStream stream, string value) {
-			if (value == null) {
+			if (string.IsNullOrEmpty(value)) {
 				stream.WriteInt32(0);
 				return;
 			}

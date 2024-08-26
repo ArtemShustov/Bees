@@ -2,11 +2,11 @@
 using UnityEngine;
 
 namespace Game.Bees.AI {
-	public class FindBeehiveGoal: Goal {
+	public class FindBeehiveGoal: WanderGoal {
 		private Bee _bee;
 		private float _maxDist = 1;
 
-		public FindBeehiveGoal(Bee entity, int priority, float maxDist = 10) : base(entity, priority) {
+		public FindBeehiveGoal(Bee entity, int priority, float maxDist = 10) : base(entity, priority, maxDist) {
 			_bee = entity;
 			_maxDist = maxDist;
 		}
@@ -26,14 +26,14 @@ namespace Game.Bees.AI {
 			var beehive = FindBeehive();
 			if (beehive != null) {
 				_bee.SetHome(beehive);
+			} else {
+				base.Start();
 			}
 		}
 		public override void Stop() { }
 		public override void OnTick() { }
 
-		public override bool CanContinueRun() {
-			return false;
-		}
+		public override bool CanContinueRun() => (_bee.Home == null) && base.CanContinueRun();
 		public override bool CanStart() {
 			return _bee.Home == null;
 		}

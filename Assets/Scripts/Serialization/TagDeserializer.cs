@@ -11,6 +11,7 @@ namespace Game.Serialization {
 				BoolTag.TagType => BoolTag.Create(bytes),
 				CompoundedTag.TagType => CompoundedTag.Create(bytes),
 				EntityTag.TagType => EntityTag.Create(bytes),
+				GuidTag.TagType => GuidTag.Create(bytes),
 				_ => null,
 			};
 		}
@@ -22,6 +23,7 @@ namespace Game.Serialization {
 				BoolTag.TagType => typeof(BoolTag),
 				CompoundedTag.TagType => typeof(CompoundedTag),
 				EntityTag.TagType => typeof(EntityTag),
+				GuidTag.TagType => typeof(GuidTag),
 				_ => null,
 			};
 		}

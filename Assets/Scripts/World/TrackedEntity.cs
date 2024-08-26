@@ -22,11 +22,13 @@ namespace Game.World {
 
 		public T Get() {
 			if (_entity == null) {
-				if (_level == null || GUID == null) {
+				if (_level == null || GUID == Guid.Empty) {
 					return null;
 				}
 				if (_level.EntitiesList.GetByGUID(GUID) is T entity) { 
 					_entity = entity;
+				} else {
+					GUID = Guid.Empty;
 				}
 			}
 			return _entity;

@@ -1,11 +1,10 @@
 ﻿using Game.Serialization.DataTags;
 using Game.World;
-using Game.World.Ticking;
 using System;
 using UnityEngine;
 
 namespace Game.Entities {
-	public abstract class Entity: MonoBehaviour, ITickable, IEntity, ITagSerializable<EntityTag> {
+	public abstract class Entity: MonoBehaviour, IEntity, ITagSerializable<EntityTag> {
 		[field: SerializeField] public Level Level { get; private set; }
 
 		private Guid _guid;
@@ -26,7 +25,7 @@ namespace Game.Entities {
 			tag.Guid = _guid;
 			WriteAdditionalData(tag.AdditionalData);
 		}
-		public void ReadData(EntityTag tag) {
+		public void ReadData(Level level, EntityTag tag) {
 			transform.position = tag.Position;
 			_guid = tag.Guid;
 			ReadAdditionalData(tag.AdditionalData);
@@ -34,8 +33,6 @@ namespace Game.Entities {
 
 		protected virtual void WriteAdditionalData(CompoundedTag tag) { }
 		protected virtual void ReadAdditionalData(CompoundedTag tag) { }
-
-		public virtual void OnTick() { }
 
 		protected virtual void OnEnable() {
 			if (Level != null) {
@@ -47,14 +44,13 @@ namespace Game.Entities {
 				Level.Remove(this);
 			}
 		}
-
-#if UNITY_EDITOR
+		#if UNITY_EDITOR
 		private void OnValidate() {
 			if (Application.isPlaying && Level) {
 				Debug.Log("Set world from Inspector");
 				SetWorld(Level);
 			}
 		}
-#endif
+		#endif
 	}
 }
