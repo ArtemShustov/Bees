@@ -14,11 +14,11 @@ namespace Game.World {
 		private const string VersionTag = "Version";
 
 		public void Update() {
-			if (Input.GetKeyDown(KeyCode.S)) {
+			if (Input.GetKey(KeyCode.F1) && Input.GetKeyDown(KeyCode.S)) {
 				Save();
 				new SaveFile().WriteData(_data);
 			}
-			if (Input.GetKeyDown(KeyCode.L)) {
+			if (Input.GetKey(KeyCode.F1) && Input.GetKeyDown(KeyCode.L)) {
 				var save = new SaveFile();
 				if (save.Exists()) {
 					_data = save.ReadData();
