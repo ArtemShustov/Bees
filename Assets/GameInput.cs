@@ -47,10 +47,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""PointerClick"",
+                    ""name"": ""PointerPress"",
                     ""type"": ""Button"",
                     ""id"": ""52c13e0d-7962-47e4-871c-7db41f7b7883"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -63,6 +63,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""141ef850-2319-41b7-9c8d-5a474f8d83ff"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -139,7 +148,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""PointerClick"",
+                    ""action"": ""PointerPress"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -147,10 +156,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""3b3f1e9b-8e08-437a-b31e-b3b068a7efa7"",
                     ""path"": ""<Touchscreen>/Press"",
-                    ""interactions"": """",
+                    ""interactions"": ""OnTouchMove"",
                     ""processors"": """",
                     ""groups"": ""Touch"",
-                    ""action"": ""PointerClick"",
+                    ""action"": ""PointerPress"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -230,6 +239,39 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""CameraZoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""57236e07-ff02-4021-92c0-e589e47c3085"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6d68e2ca-1efd-4711-8fa7-b40504a868e1"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ec4a9124-ad50-4593-93af-b784deb0bbcf"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Touch"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -574,7 +616,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": ""ToggleMenu"",
                     ""type"": ""Button"",
                     ""id"": ""889839b3-db9a-40b6-a778-1c594b50517e"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -651,8 +693,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_CameraMove = m_Gameplay.FindAction("CameraMove", throwIfNotFound: true);
         m_Gameplay_CameraZoom = m_Gameplay.FindAction("CameraZoom", throwIfNotFound: true);
-        m_Gameplay_PointerClick = m_Gameplay.FindAction("PointerClick", throwIfNotFound: true);
+        m_Gameplay_PointerPress = m_Gameplay.FindAction("PointerPress", throwIfNotFound: true);
         m_Gameplay_PointerPosition = m_Gameplay.FindAction("PointerPosition", throwIfNotFound: true);
+        m_Gameplay_Select = m_Gameplay.FindAction("Select", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -736,16 +779,18 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_CameraMove;
     private readonly InputAction m_Gameplay_CameraZoom;
-    private readonly InputAction m_Gameplay_PointerClick;
+    private readonly InputAction m_Gameplay_PointerPress;
     private readonly InputAction m_Gameplay_PointerPosition;
+    private readonly InputAction m_Gameplay_Select;
     public struct GameplayActions
     {
         private @GameInput m_Wrapper;
         public GameplayActions(@GameInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @CameraMove => m_Wrapper.m_Gameplay_CameraMove;
         public InputAction @CameraZoom => m_Wrapper.m_Gameplay_CameraZoom;
-        public InputAction @PointerClick => m_Wrapper.m_Gameplay_PointerClick;
+        public InputAction @PointerPress => m_Wrapper.m_Gameplay_PointerPress;
         public InputAction @PointerPosition => m_Wrapper.m_Gameplay_PointerPosition;
+        public InputAction @Select => m_Wrapper.m_Gameplay_Select;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -761,12 +806,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @CameraZoom.started += instance.OnCameraZoom;
             @CameraZoom.performed += instance.OnCameraZoom;
             @CameraZoom.canceled += instance.OnCameraZoom;
-            @PointerClick.started += instance.OnPointerClick;
-            @PointerClick.performed += instance.OnPointerClick;
-            @PointerClick.canceled += instance.OnPointerClick;
+            @PointerPress.started += instance.OnPointerPress;
+            @PointerPress.performed += instance.OnPointerPress;
+            @PointerPress.canceled += instance.OnPointerPress;
             @PointerPosition.started += instance.OnPointerPosition;
             @PointerPosition.performed += instance.OnPointerPosition;
             @PointerPosition.canceled += instance.OnPointerPosition;
+            @Select.started += instance.OnSelect;
+            @Select.performed += instance.OnSelect;
+            @Select.canceled += instance.OnSelect;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -777,12 +825,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @CameraZoom.started -= instance.OnCameraZoom;
             @CameraZoom.performed -= instance.OnCameraZoom;
             @CameraZoom.canceled -= instance.OnCameraZoom;
-            @PointerClick.started -= instance.OnPointerClick;
-            @PointerClick.performed -= instance.OnPointerClick;
-            @PointerClick.canceled -= instance.OnPointerClick;
+            @PointerPress.started -= instance.OnPointerPress;
+            @PointerPress.performed -= instance.OnPointerPress;
+            @PointerPress.canceled -= instance.OnPointerPress;
             @PointerPosition.started -= instance.OnPointerPosition;
             @PointerPosition.performed -= instance.OnPointerPosition;
             @PointerPosition.canceled -= instance.OnPointerPosition;
+            @Select.started -= instance.OnSelect;
+            @Select.performed -= instance.OnSelect;
+            @Select.canceled -= instance.OnSelect;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -979,8 +1030,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     {
         void OnCameraMove(InputAction.CallbackContext context);
         void OnCameraZoom(InputAction.CallbackContext context);
-        void OnPointerClick(InputAction.CallbackContext context);
+        void OnPointerPress(InputAction.CallbackContext context);
         void OnPointerPosition(InputAction.CallbackContext context);
+        void OnSelect(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

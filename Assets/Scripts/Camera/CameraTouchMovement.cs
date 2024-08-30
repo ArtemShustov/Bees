@@ -14,7 +14,7 @@ namespace Game.CameraControl {
 		}
 
 		private void LateUpdate() {
-			if (GlobalInput.Actions.Gameplay.PointerClick.inProgress) {
+			if (GlobalInput.Actions.Gameplay.PointerPress.phase == UnityEngine.InputSystem.InputActionPhase.Performed) {
 				if (_delayedStart) {
 					_pointerStart = _camera.ScreenToWorldPoint(GlobalInput.Actions.Gameplay.PointerPosition.ReadValue<Vector2>());
 					_delayedStart = false;
@@ -34,10 +34,10 @@ namespace Game.CameraControl {
 		}
 		
 		private void OnEnable() {
-			GlobalInput.Actions.Gameplay.PointerClick.started += OnClick;
+			GlobalInput.Actions.Gameplay.PointerPress.performed += OnClick;
 		}
 		private void OnDisable() {
-			GlobalInput.Actions.Gameplay.PointerClick.started -= OnClick;
+			GlobalInput.Actions.Gameplay.PointerPress.performed -= OnClick;
 		}
 	}
 }

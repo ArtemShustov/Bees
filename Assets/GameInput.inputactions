@@ -24,10 +24,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "PointerClick",
+                    "name": "PointerPress",
                     "type": "Button",
                     "id": "52c13e0d-7962-47e4-871c-7db41f7b7883",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "141ef850-2319-41b7-9c8d-5a474f8d83ff",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -116,7 +125,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "PointerClick",
+                    "action": "PointerPress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -124,10 +133,10 @@
                     "name": "",
                     "id": "3b3f1e9b-8e08-437a-b31e-b3b068a7efa7",
                     "path": "<Touchscreen>/Press",
-                    "interactions": "",
+                    "interactions": "OnTouchMove",
                     "processors": "",
                     "groups": "Touch",
-                    "action": "PointerClick",
+                    "action": "PointerPress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -207,6 +216,39 @@
                     "action": "CameraZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "57236e07-ff02-4021-92c0-e589e47c3085",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d68e2ca-1efd-4711-8fa7-b40504a868e1",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ec4a9124-ad50-4593-93af-b784deb0bbcf",
+                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -551,7 +593,7 @@
                     "name": "ToggleMenu",
                     "type": "Button",
                     "id": "889839b3-db9a-40b6-a778-1c594b50517e",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
