@@ -1,26 +1,42 @@
-﻿using Game.Bees.Genome;
 using System;
+using Game.Bees.Genes;
+using Game.Items;
+using Game.Registries;
+using Game.Serialization;
 using UnityEngine;
 
 namespace Game.Bees {
 	[Serializable]
-	public class BeeBase {
-		[field: SerializeField] public ProductGen ProductGen { get; private set; }
-		[field: SerializeField] public ProductivityGen EfficiencyGen { get; private set; }
+	public class BeeBase: ISerializableComponent {
+		[field: SerializeField] public ProductGene Product { get; set; }
+		[field: SerializeField] public ProductivityGene Productivity { get; set; }
 
-		public BeeBase(ProductGen productGen, ProductivityGen efficiencyGen) {
-			ProductGen = productGen;
-			EfficiencyGen = efficiencyGen;
-		}
+		[field: SerializeField] public bool HasNektar { get; set; }
 
-		public string GetOutput() {
-			return ProductGen?.Resource;
+		public Item GetOutput() => Product.Product;
+		public int GetOutputCount() => Product.BasicCount;
+
+		public bool IsValid() {
+			return Product && Productivity;
 		}
-		public int GetOutputCount() {
-			if (ProductGen == null || EfficiencyGen == null) {
-				return 0;
+		
+		public void WriteDataTo(DataTag root) {
+			root.Set(nameof(HasNektar), HasNektar);
+			if (Product) {
+				root.Set(nameof(Product), Product.Id.ToString());
 			}
-			return Mathf.RoundToInt(ProductGen.BaseCount * EfficiencyGen.OutputModifier - 0.01f); // 0.01f due to global warming?
+			if (Productivity) {
+				root.Set(nameof(Productivity), Productivity.Id.ToString());
+			}
+		}
+		public void ReadDataFrom(DataTag root) {
+			HasNektar = root.Get(nameof(HasNektar), false);
+			if (root.TryGetString(nameof(Product), out string product)) {
+				Product = GlobalRegistries.Genes.Get(product) is ProductGene gene ? gene : null;
+			}
+			if (root.TryGetString(nameof(Productivity), out string productivity)) {
+				Productivity = GlobalRegistries.Genes.Get(productivity) is ProductivityGene gene ? gene : null;
+			}
 		}
 	}
 }

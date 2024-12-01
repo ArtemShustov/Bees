@@ -1,17 +1,16 @@
-﻿using Game.Entities;
-using System;
+using Game.Entities;
 using UnityEngine;
 
 namespace Game.World {
-	[Obsolete]
 	public class InitSceneEntities: MonoBehaviour {
 		[SerializeField] private Level _level;
 
-		private void Start() {
-			var entities = FindObjectsOfType<Entity>();
+		private void Awake() {
+			var entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 			foreach (var entity in entities) {
-				entity.SetWorld(_level);
+				_level.AddEntityWithNewGUID(entity);
 			}
+			Destroy(this);
 		}
 	}
 }

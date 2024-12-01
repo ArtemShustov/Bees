@@ -1,7 +1,7 @@
-﻿using System.Text;
+using System.IO;
 
 namespace Game.Debugging {
 	public interface IDebugInfoProvider {
-		public void AddDebugInfo(StringBuilder builder);
+		void GetDebugInfo(TextWriter writer);
 	}
 }

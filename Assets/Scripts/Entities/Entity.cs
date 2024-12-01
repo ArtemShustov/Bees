@@ -1,56 +1,43 @@
-﻿using Game.Serialization.DataTags;
-using Game.World;
 using System;
-using UnityEngine;
+using System.IO;
+using Game.Debugging;
+using Game.Serialization;
+using Game.World;
 
 namespace Game.Entities {
-	public abstract class Entity: MonoBehaviour, IEntity, ITagSerializable<EntityTag> {
-		[field: SerializeField] public Level Level { get; private set; }
+	public class Entity: SerializableObject, ISerializableComponent, IDebugInfoProvider {
+		public Guid Guid { get; private set; }
+		public Level Level { get; private set; }
 
-		private Guid _guid;
-
-		protected virtual void Awake() {
-			_guid = Guid.NewGuid();
+		public virtual void Init(Level level) {
+			this.Level = level;
+			foreach (var tickable in GetComponents<ITickable>()) {
+				tickable.SetTicker(Level.Ticker);
+			}
+		}
+		public void SetGUID(Guid guid) {
+			this.Guid = guid;
+		}
+		public void Destory() {
+			Level.RemoveEntity(this);
+			Level = null;
+			Destroy(gameObject);
+		}
+		
+		public virtual void WriteDataTo(DataTag root) {
+			root.Set(nameof(Guid), this.Guid);
+		}
+		public virtual void ReadDataFrom(DataTag root) {
+			this.Guid = root.GetGuid(nameof(Guid), this.Guid);
+		}
+		public virtual void GetDebugInfo(TextWriter writer) {
+			writer.WriteLine($"Entity: {Id}({Guid})");
 		}
 
-		public void SetWorld(Level level) {
-			Level?.Remove(this);
-			Level = level;
-			Level.Add(this);
-		}
-		public Guid GetGUID() => _guid;
-
-		public void WriteData(EntityTag tag) {
-			tag.Position = transform.position;
-			tag.Guid = _guid;
-			WriteAdditionalData(tag.AdditionalData);
-		}
-		public void ReadData(Level level, EntityTag tag) {
-			transform.position = tag.Position;
-			_guid = tag.Guid;
-			ReadAdditionalData(tag.AdditionalData);
-		}
-
-		protected virtual void WriteAdditionalData(CompoundedTag tag) { }
-		protected virtual void ReadAdditionalData(CompoundedTag tag) { }
-
-		protected virtual void OnEnable() {
+		public void OnDestroy() {
 			if (Level != null) {
-				Level.Add(this);
+				Level.RemoveEntity(this);
 			}
 		}
-		protected virtual void OnDisable() {
-			if (Level != null) {
-				Level.Remove(this);
-			}
-		}
-		#if UNITY_EDITOR
-		private void OnValidate() {
-			if (Application.isPlaying && Level) {
-				Debug.Log("Set world from Inspector");
-				SetWorld(Level);
-			}
-		}
-		#endif
 	}
 }

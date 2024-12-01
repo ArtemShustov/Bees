@@ -1,53 +1,48 @@
-﻿using Game.Serialization.DataTags;
-using Game.World;
-using System;
+using Game.Serialization;
 
 namespace Game.Bees {
-	public partial class Beehive {
-		[Serializable]
-		private class BeeSlot: ITagSerializable<CompoundedTag> {
-			public BeeBase Bee { get; private set; }
-			public int Timer { get; private set; } = 0;
-			public bool HasNektar { get; private set; } = false;
+	public class BeeSlot {
+		public BeeBase Bee { get; private set; }
+		public int Timer { get; private set; }
 
-			public bool IsFree => Bee == null;
+		public BeeSlot() { }
+		public BeeSlot(BeeBase bee, int timer) {
+			Bee = bee;
+			Timer = timer;
+		}
 
-			public BeeSlot(Level level) {
-				Timer = 0; 
+		public void Set(BeeBase bee) {
+			Bee = bee;
+			Timer = 0;
+		}
+		public bool IsFree() => Bee == null;
+		
+		public void OnTick() {
+			if (Bee != null) {
+				Timer++;
 			}
-			public BeeSlot(BeeBase bee, bool hasNektar) {
-				Bee = bee;
-				Timer = 0;
-				HasNektar = hasNektar;
-			}
+		}
 
-			public void SetBee(BeeBase bee, bool hasNektar) {
-				Bee = bee;
-				Timer = 0;
-				HasNektar = hasNektar;
+		public DataTag ToTag() {
+			var root = new DataTag();
+			root.SetBool("IsFree", IsFree());
+			Bee?.WriteDataTo(root);
+			root.SetLong(nameof(Timer), Timer);
+			return root;
+		}
+		public static BeeSlot FromTag(DataTag tag) {
+			if (tag == null) {
+				return new BeeSlot();
 			}
-
-			public void OnTick() {
-				if (Bee != null) {
-					Timer += 1;
-				}
+			
+			var timer = (int)tag.GetLong(nameof(Timer), 0);
+			var isFree = tag.GetBool("IsFree", true);
+			if (!isFree) {
+				var bee = new BeeBase();
+				bee.ReadDataFrom(tag);
+				return new BeeSlot(bee, timer);
 			}
-
-			public void WriteData(CompoundedTag tag) {
-				tag.Add(new BoolTag(nameof(HasNektar), HasNektar));
-				tag.Add(new IntTag(nameof(Timer), Timer));
-				if (Bee != null) {
-					tag.Add(BeeBaseSerializator.ToTag(nameof(Bee), Bee));
-				}
-			}
-			public void ReadData(Level level, CompoundedTag tag) {
-				HasNektar = tag.Get<BoolTag>(nameof(HasNektar))?.Value ?? false;
-				Timer = tag.Get<IntTag>(nameof(Timer))?.Value ?? 0;
-				var beeTag = tag.Get<CompoundedTag>(nameof(Bee));
-				if (level != null && beeTag != null) {
-					Bee = BeeBaseSerializator.FromTag(level.GenRegistry, beeTag);
-				}
-			}
+			return new BeeSlot();
 		}
 	}
 }

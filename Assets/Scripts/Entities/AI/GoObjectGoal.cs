@@ -1,56 +1,29 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Game.Entities.AI {
-	public class GoObjectGoal: Goal {
-		private GameObject _target;
-		private Vector2 _position;
-		private bool _running = false;
-
-		public GoObjectGoal(LivingEntity entity, int priority) : base(entity, priority) {
+	public class GoObjectGoal: GoPositionGoal {
+		private Transform _target;
+		private bool _isRunning;
+		private Vector3 _lastPosition;
+		
+		public GoObjectGoal(Movement movement, float stopDist = 0.1f): base(movement, stopDist) {
 		}
-
-		public void SetTarget(GameObject target) {
+		public void SetTarget(Transform target) {
 			_target = target;
-			_position = target.transform.position;
-			if (_running) {
-				Entity.Movement.MoveTo(_position);
+			if (target != null) {
+				base.SetTarget(target.position);
 			}
-		}
-		private void ForceStop() {
-			_running = false;
-			Entity.Movement.TargetReached -= OnTargetReached;
 		}
 
-		public override void Start() {
-			if (_target == null || _running) {
-				return;
-			}
-			_running = true;
-			Entity.Movement.MoveTo(_position);
-			Entity.Movement.TargetReached += OnTargetReached;
-		}
-		public override void Stop() {
-			if (_running) {
-				ForceStop();
-			}
-		}
+		public override bool CanStart() => _target && base.CanStart();
+		public override bool CanContinueRun() => _target && base.CanContinueRun();
+
 		public override void OnTick() {
-			if (_target == null) {
-				_running = false;
-				Entity.Movement.MoveTo(null);
-			} else {
-				var target = (Vector2)_target.transform.position;
-				if (target != _position) {
-					_position = target;
-					Entity.Movement.MoveTo(_position);
-				}
+			if (_target.position != _lastPosition) {
+				_lastPosition = _target.position;
+				base.SetTarget(_lastPosition);
 			}
-		}
-		public override bool CanStart() => !_running && _target != null;
-		public override bool CanContinueRun() => _running;
-
-		protected virtual void OnTargetReached(EntityMovement.Target target) {
-			ForceStop();
+			base.OnTick();
 		}
 	}
 }

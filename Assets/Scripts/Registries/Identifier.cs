@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Game.Registries {
@@ -31,5 +31,9 @@ namespace Game.Registries {
 		public override int GetHashCode() {
 			return Full.GetHashCode();
 		}
+
+		public static Identifier FromString(string id) {
+			return new Identifier(id);
+		} 
 	}
 }

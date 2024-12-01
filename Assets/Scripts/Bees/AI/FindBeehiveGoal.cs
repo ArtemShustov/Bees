@@ -1,41 +1,29 @@
-﻿using Game.Entities.AI;
+using System.Linq;
+using Game.Entities.AI;
+using Game.Utils;
 using UnityEngine;
 
 namespace Game.Bees.AI {
-	public class FindBeehiveGoal: WanderGoal {
-		private Bee _bee;
-		private float _maxDist = 1;
+	public class FindBeehiveGoal: Goal {
+		private readonly BeeAiBrain _bee;
+		private readonly float _dist;
 
-		public FindBeehiveGoal(Bee entity, int priority, float maxDist = 10) : base(entity, priority, maxDist) {
-			_bee = entity;
-			_maxDist = maxDist;
+		public FindBeehiveGoal(BeeAiBrain bee, float dist = 10) {
+			_bee = bee;
+			_dist = dist;
 		}
 
-		private Beehive FindBeehive() {
-			var hive = _bee.Level.EntitiesList.FindNeareast<Beehive>(_bee.transform.position);
-			if (hive != null) {
-				var dist = Vector2.Distance(hive.transform.position, _bee.transform.position);
-				if (dist > _maxDist) {
-					return null;
-				}
-			}
-			return hive;
-		}
+		public override bool CanStart() => !_bee.Home.Get();
+		public override bool CanContinueRun() => !_bee.Home.Get();
 
 		public override void Start() {
-			var beehive = FindBeehive();
-			if (beehive != null) {
-				_bee.SetHome(beehive);
-			} else {
-				base.Start();
-			}
+			var beehive = Physics2D.OverlapCircleAll(_bee.transform.position, _dist)
+				.Where(o => o.GetComponent<Beehive>())
+				.Select(o => o.GetComponent<Beehive>())
+				.GetRandom();
+			_bee.SetHome(beehive);
 		}
 		public override void Stop() { }
 		public override void OnTick() { }
-
-		public override bool CanContinueRun() => (_bee.Home == null) && base.CanContinueRun();
-		public override bool CanStart() {
-			return _bee.Home == null;
-		}
 	}
 }

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Game.Entities.AI {
 	public class GoalSelector {
 		private List<Goal> _goals = new List<Goal>();
 		private Goal _current;
+		private int _currentPriority;
 		
 		public Goal GetCurrent() => _current;
 
@@ -18,15 +19,23 @@ namespace Game.Entities.AI {
 				_current.Stop();
 				_current = null;
 			}
-			foreach (var goal in _goals) {
-				if (goal.CanStart() && (_current == null || goal.Priority < _current.Priority)) {
-					_current?.Stop();
-					_current = goal;
-					_current.Start();
-					break;
+			CheckGoals();
+
+			_current?.OnTick();
+
+			void CheckGoals() {
+				var priority = 0;
+				foreach (var goal in _goals) {
+					if (goal.CanStart() && (_current == null || priority < _currentPriority)) {
+						_current?.Stop();
+						_current = goal;
+						_currentPriority = priority;
+						_current.Start();
+						break;
+					}
+					priority++;
 				}
 			}
-			_current?.OnTick();
 		}
 	}
 }

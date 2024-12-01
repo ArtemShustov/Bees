@@ -1,22 +1,23 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Game.Entities.AI {
 	public class WanderGoal: GoPositionGoal {
-		private float _maxDist = 1;
+		private Transform _self;
+		private float _maxDist;
 
-		public WanderGoal(LivingEntity entity, int priority, float maxDist) : base(entity, priority) {
+		public WanderGoal(Movement movement, float maxDist, float stopDist = 0.1f): base(movement, stopDist) {
+			_self = movement.transform;
 			_maxDist = maxDist;
+			SetRandomPosition();
 		}
 
 		private void SetRandomPosition() {
-			var dest = UnityEngine.Random.insideUnitCircle.normalized * (_maxDist * UnityEngine.Random.Range(0.3f, 1));
-			SetTarget((Vector2)Entity.transform.position + dest);
+			var position = (Vector2)_self.position + Random.insideUnitCircle * _maxDist;
+			SetTarget(position);
 		}
-
 		public override void Start() {
 			SetRandomPosition();
 			base.Start();
 		}
-		public override bool CanStart() => true;
 	}
 }

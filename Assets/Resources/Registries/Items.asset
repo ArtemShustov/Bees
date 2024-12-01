@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad34e16edfcdc7479c8580ab1c0263e, type: 3}
+  m_Script: {fileID: 11500000, guid: c4d9fa3300434f7e9f2deecd72e1b098, type: 3}
   m_Name: Items
   m_EditorClassIdentifier: 
   _list:
-  - {fileID: 11400000, guid: 609008c628ff3e74e84e8321d6a0cd1c, type: 2}
-  - {fileID: 11400000, guid: 518e287408a0c6041a43d89d14ad516c, type: 2}
-  - {fileID: 11400000, guid: 82af389b754dd7e4c9487ff0271088c3, type: 2}
+  - {fileID: 11400000, guid: cf4f10ecb33f0114ba0d2f346c18e4ad, type: 2}
+  - {fileID: 11400000, guid: 0847b24772e91aa4b9e54dcd735e1670, type: 2}
+  - {fileID: 11400000, guid: e55acd174757baf42af5df7fa46eabfc, type: 2}

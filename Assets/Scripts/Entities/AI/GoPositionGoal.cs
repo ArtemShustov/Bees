@@ -1,48 +1,41 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Game.Entities.AI {
 	public class GoPositionGoal: Goal {
-		private EntityMovement.Target _target;
-		private bool _running = false;
-
-		public GoPositionGoal(LivingEntity entity, int priority) : base(entity, priority) {
+		private Movement _movement;
+		private Vector2 _target;
+		private float _stopDist;
+		
+		private bool _hasTarget;
+		private bool _isRunning;
+		
+		public GoPositionGoal(Movement movement, float stopDist = 0.1f) {
+			_movement = movement;
+			_stopDist = stopDist;
+		}
+		public void SetTarget(Vector2 position) {
+			_target = position;
+			_hasTarget = true;
+		}
+		public void ClearTarget() {
+			_hasTarget = false;
 		}
 
-		public void SetTarget(Vector2 point) {
-			_target = new EntityMovement.Target(point);
-			if (_running) {
-				Entity.Movement.MoveTo(_target);
-			}
-		}
-		private void ForceStop() {
-			_running = false;
-			Entity.Movement.TargetReached -= OnTargetReached;
-		}
-
+		public bool IsTargetReached() => Vector2.Distance(_target, _movement.transform.position) <= _stopDist;
+		
+		public override bool CanStart() => _hasTarget && !_isRunning;
+		public override bool CanContinueRun() => _hasTarget && _isRunning && !IsTargetReached();
+		
 		public override void Start() {
-			if (_target == null || _running) {
-				return;
-			}
-			_running = true;
-			Entity.Movement.MoveTo(_target);
-			Entity.Movement.TargetReached += OnTargetReached;
+			_isRunning = true;
 		}
 		public override void Stop() {
-			if (_running) {
-				ForceStop();
-			}
+			_movement.Move(Vector2.zero);
+			_isRunning = false;
 		}
 		public override void OnTick() {
-			if (_running && _target == null) {
-				_running = false;
-				Entity.Movement.MoveTo(null);
-			}
-		}
-		public override bool CanStart() => !_running && _target != null;
-		public override bool CanContinueRun() => _running;
-
-		protected virtual void OnTargetReached(EntityMovement.Target target) {
-			ForceStop();
+			var direction = _target - (Vector2)_movement.transform.position;
+			_movement.Move(direction.normalized);
 		}
 	}
 }

@@ -1,39 +1,27 @@
-﻿using Game.Entities.AI;
-using UnityEngine;
+using Game.Entities;
+using Game.Entities.AI;
 
 namespace Game.Bees.AI {
 	public class GoBeehiveGoal: GoObjectGoal {
-		private float _dist = 1;
-		private Bee _bee;
+		private readonly BeeAiBrain _bee;
+		private readonly int _cooldown;
 
-		public GoBeehiveGoal(Bee entity, int priority, float enterDist = 1) : base(entity, priority) {
-			_bee = entity;
-			_dist = enterDist;
+		public GoBeehiveGoal(BeeAiBrain bee, Movement movement, int cooldown, float stopDist = 0.1f): base(movement, stopDist) {
+			_bee = bee;
+			_cooldown = cooldown;
 		}
-
-		private bool IsNearBeehive() {
-			return Vector2.Distance(_bee.transform.position, _bee.Home.transform.position) < _dist;
-		}
-
+		
+		public override bool CanStart() => _bee.Home.Get() && _bee.Timer >= _cooldown;
+		public override bool CanContinueRun() => _bee.Home.Get() && base.CanContinueRun();
 		public override void Start() {
-			SetTarget(_bee.Home.gameObject);
+			SetTarget(_bee.Home.Get().transform);
 			base.Start();
 		}
 		public override void OnTick() {
-			if (IsNearBeehive()) {
-				if (!_bee.TryEnterBeehive(_bee.Home)) {
-					// beehive is full, find another;
-					_bee.ClearHome();
-				}
-			}
 			base.OnTick();
-		}
-
-		public override bool CanStart() {
-			return (_bee.Home != null) && (_bee.BeehiveCooldown <= 0);
-		}
-		public override bool CanContinueRun() {
-			return _bee.Home != null;
+			if (IsTargetReached()) {
+				_bee.Home.Get().AddBee(_bee.Bee);
+			}
 		}
 	}
 }

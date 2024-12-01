@@ -1,18 +1,21 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Game.Entities.AI {
 	public class SuicideGoal: Goal {
-		public SuicideGoal(LivingEntity entity, int priority) : base(entity, priority) {
+		private Entity _entity;
+
+		public SuicideGoal(Entity entity) {
+			_entity = entity;
 		}
 
+		public override bool CanStart() => true;
+		public override bool CanContinueRun() => false;
+
 		public override void Start() {
-			Debug.LogWarning($"Entity {Entity.GetType()}({Entity.GetGUID()}) committed suicide!");
-			GameObject.Destroy(Entity.gameObject);
+			_entity.Destory();
+			Debug.Log($"AI Suicide: {_entity.name}({_entity.Guid}) is {_entity.GetType()}");
 		}
 		public override void Stop() { }
 		public override void OnTick() { }
-
-		public override bool CanContinueRun() => true;
-		public override bool CanStart() => true;
 	}
 }

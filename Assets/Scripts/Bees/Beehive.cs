@@ -1,145 +1,104 @@
-﻿using Game.Debugging;
-using Game.Entities;
-using Game.Resources.Containers;
-using Game.Serialization.DataTags;
-using Game.World;
-using Game.World.Ticking;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using Game.Entities;
+using Game.Items;
+using Game.Serialization;
+using Game.Utils;
 using UnityEngine;
 
 namespace Game.Bees {
-	public partial class Beehive: Entity, IDebugInfoProvider, ITickable {
-		[Min(1)]
-		[SerializeField] private int _slotsCount = 2;
-		[Min(1)]
-		[SerializeField] private int _baseSleeptime = 60; // in ticks
-		[SerializeField] private float _findRadius = 100;
-		[Min(1)]
-		[SerializeField] private int _containerCapacity = 1;
-
-		private Container _container;
+	public class Beehive: TickableEntity {
+		[Min(0), HideInPlayMode]
+		[SerializeField] private int _slotsCount = 1;
+		[SerializeField] private int _sleepTime = 60;
+		[SerializeField] private Bee _prefab;
+		
 		private BeeSlot[] _slots;
-
-		protected override void Awake() {
-			base.Awake();
-			_container = new Container(_containerCapacity);
+		private Storage _storage = new Storage();
+		
+		public IReadOnlyCollection<BeeSlot> Slots => _slots;
+		public Storage Storage => _storage;
+		
+		private void Awake() {
 			_slots = new BeeSlot[_slotsCount];
-			for (int i = 0; i < _slots.Length; i++) {
-				_slots[i] = new BeeSlot(Level);
+			for (int i = 0; i < _slotsCount; i++) {
+				_slots[i] = new BeeSlot();
 			}
 		}
 
-		public bool Add(BeeBase bee, bool hasNektar) {
-			var slot = _slots.FirstOrDefault((slot) => slot.IsFree);
+		public bool HasFreeSlot() {
+			return _slots.Any(slot => slot.IsFree());
+		}
+		public bool AddBee(Bee bee) {
+			var slot = _slots.FirstOrDefault(slot => slot.IsFree());
 			if (slot == null) {
 				return false;
 			}
-			slot.SetBee(bee, hasNektar);
+			slot.Set(bee.Base);
+			bee.Destory();
 			return true;
 		}
-		private bool Drop(BeeSlot slot) {
-			if (slot.IsFree) {
-				return false;
-			}
-
-			var flower = GetFlower();
-
-			var instance = Level.Spawn<Bee>(transform.position);
-			if (instance == null) {
-				Debug.LogWarning("Can't spawn Bee.");
-				slot.SetBee(null, false);
-				return false; 
-			}
-			instance.SetData(slot.Bee, this, flower);
-			slot.SetBee(null, false);
-			return true;
+		public Entity SpawnBee(BeeBase bee) {
+			var entity = Instantiate(_prefab);
+			entity.transform.position = transform.position;
+			entity.SetBase(bee);
+			entity.SetHome(this);
+			Level.AddEntityWithNewGUID(entity);
+			return entity;
 		}
-		private void AddResult(BeeBase bee) {
-			var count = bee.GetOutputCount();
-			if (count > 0) {
-				var item = Level.ItemRegistry.Get(bee.GetOutput());
-				if (item != null) {
-					_container.Add(item, count);
-				} else {
-					Debug.LogWarning($"Item '{bee.GetOutput()}' not found in registry");
-				}
-			}
-		}
-		private Flower GetFlower() {
-			var flowers = Level.EntitiesList.FindInRadius<Flower>(transform.position, _findRadius);
-			if (flowers == null || flowers.Length == 0) {
-				return null;
-			}
-			var flower = flowers[UnityEngine.Random.Range(0, flowers.Length)];
-			return flower;
-		}
-
-		public virtual void OnTick() {
-			UpdateSlots();
-
-			void UpdateSlots() {
-				if (_slots == null) {
-					return;
-				}
-				foreach (var slot in _slots) {
-					if (slot == null) {
-						continue;
-					}
-
-					slot.OnTick();
-					if (slot.Timer >= _baseSleeptime) {
-						if (slot.HasNektar) {
-							AddResult(slot.Bee);
-						}
-						Drop(slot);
-					}
-				}
-			}
-		}
-		protected override void WriteAdditionalData(CompoundedTag tag) {
-			base.WriteAdditionalData(tag);
-
-			var slotsTag = new CompoundedTag(nameof(_slots));
-			for (int i = 0; i < _slots.Length; i++) {
-				var slot = _slots[i];
-				var slotTag = new CompoundedTag($"Slot{i}");
-				slot.WriteData(slotTag);
-				slotsTag.Add(slotTag);
-			}
-			tag.Add(slotsTag);
-
-			var container = new CompoundedTag(nameof(_container));
-			_container.WriteData(container);
-			tag.Add(container);
-		}
-		protected override void ReadAdditionalData(CompoundedTag tag) {
-			base.ReadAdditionalData(tag);
-
-			var slotsTag = tag.Get<CompoundedTag>(nameof(_slots));
-			if (slotsTag != null) {
-				_slots = new BeeSlot[slotsTag.List.Count];
-				for (int i = 0; i < _slots.Length; i++) {
-					_slots[i] = new BeeSlot(Level);
-					_slots[i].ReadData(Level, slotsTag.List[i] as CompoundedTag);
-				}
-			}
-
-			var container = tag.Get<CompoundedTag>(nameof(_container));
-			if (container != null) {
-				_container = new Container();
-				_container.ReadData(Level, container);
-			}
-		}
-
-		public void AddDebugInfo(StringBuilder builder) {
-			builder.AppendLine($"Beehive. Slots: {_slots.Length}");
+		
+		protected override void OnTick() {
 			foreach (var slot in _slots) {
-				if (slot != null || !slot.IsFree) {
-					builder.AppendLine($"[Slot] Bee: {!slot.IsFree} SleepTimer: {slot.Timer}/{_baseSleeptime}"); 
+				if (!slot.IsFree()) {
+					slot.OnTick();
+					if (slot.Timer >= _sleepTime) {
+						OnSlotTimerEnd(slot);
+					}
 				}
 			}
-			_container.AddDebugInfo(builder);
+		}
+		private void OnSlotTimerEnd(BeeSlot slot) {
+			var bee = slot.Bee;
+
+			if (bee.HasNektar && bee.Product && bee.Productivity) {
+				var output = bee.GetOutput();
+				var count = bee.GetOutputCount();
+				_storage.Add(output, count);
+			}
+			bee.HasNektar = false;
+			
+			SpawnBee(bee);
+			slot.Set(null);
+		}
+
+		public override void WriteDataTo(DataTag root) {
+			base.WriteDataTo(root);
+			root.Set(nameof(_storage), _storage.ToTag());
+
+			var slots = _slots.Select(slot => slot.ToTag()).ToArray();
+			root.Set("Slots", slots);
+		}
+		public override void ReadDataFrom(DataTag root) {
+			base.ReadDataFrom(root);
+			_storage.FromTag(root.Get<DataTag>(nameof(_storage), null));
+
+			var slots = root.Get<DataTag[]>("Slots", null);
+			if (slots != null && slots.Length > 0) {
+				_slots = slots.Select(BeeSlot.FromTag).ToArray();
+			}
+		}
+
+		public override void GetDebugInfo(TextWriter writer) {
+			base.GetDebugInfo(writer);
+			writer.WriteLine($"Beehive: {_slots.Length}");
+			foreach (var slot in _slots) {
+				writer.WriteLine($"> Slot: {slot.Timer}");
+			}
+			writer.WriteLine($"Storage: {_storage.Items.Count}");
+			foreach (var item in _storage.Items) {
+				writer.WriteLine($"> {item.Count} of {item.Item.Id}");
+			}
 		}
 	}
 }
