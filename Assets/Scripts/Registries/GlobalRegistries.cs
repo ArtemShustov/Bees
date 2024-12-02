@@ -4,7 +4,7 @@ using Game.Items;
 using UnityEngine;
 
 namespace Game.Registries {
-	public class GlobalRegistries {
+	public static class GlobalRegistries {
 		public readonly static EntityRegistry Entities = new EntityRegistry();
 		public readonly static string EntitiesPath = "Registries/Entities";
 		
@@ -13,6 +13,8 @@ namespace Game.Registries {
 		
 		public readonly static GeneRegistry Genes = new GeneRegistry();
 		public readonly static string GenesPath = "Registries/Genes";
+
+		public static bool IsInitialized { get; private set; } = false;
 		
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 		private static void Load() {
@@ -22,6 +24,8 @@ namespace Game.Registries {
 			Debug.Log($"Registed {Items.List.Count} items.");
 			Resources.Load<GeneRegesitryAsset>(GenesPath)?.RegisterAll(Genes);
 			Debug.Log($"Registed {Genes.List.Count} genes.");
+
+			IsInitialized = true;
 		}
 		private static T LoadAsset<T>(string path) where T: ScriptableObject {
 			var result = UnityEngine.Resources.Load<T>(path);

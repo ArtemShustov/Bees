@@ -12,8 +12,20 @@ namespace Game.Bees.AI {
 			SetTarget(_bee.Flower.Get()?.transform);
 		}
 
-		public override bool CanStart() => _bee.Flower.Get() && _bee.Timer >= _cooldowm && !_bee.Bee.Base.HasNektar;
-		public override bool CanContinueRun() => _bee.Flower.Get() && !_bee.Bee.Base.HasNektar && base.CanContinueRun();
+		private bool IsCorretTime() => _bee.Bee.CanWork();
+
+		public override bool CanStart() {
+			return _bee.Flower.Get()
+			       && _bee.Timer >= _cooldowm
+			       && !_bee.Bee.Base.HasNektar
+			       && IsCorretTime();
+		}
+		public override bool CanContinueRun() {
+			return _bee.Flower.Get()
+			       && !_bee.Bee.Base.HasNektar
+			       && base.CanContinueRun()
+			       && IsCorretTime();
+		}
 
 		public override void Start() {
 			SetTarget(_bee.Flower.Get()?.transform);

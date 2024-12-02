@@ -24,15 +24,18 @@ namespace Game.Items {
 		public void Add(int count) {
 			Count += count;
 		}
+		public void Take(int count) {
+			Count -= count;
+		}
 
 		public DataTag ToTag() {
 			var root = new DataTag();
-			root.SetString("id", Item.Id.ToString());
-			root.SetLong("count", Count);
+			root.SetString("Id", Item.Id.ToString());
+			root.SetLong("Count", Count);
 			return root;
 		}
 		public static ItemStack FromTag(DataTag tag) {
-			if (tag.TryGetString("id", out var id) && tag.TryGetLong("count", out var count)) {
+			if (tag.TryGetString("Id", out var id) && tag.TryGetLong("Count", out var count)) {
 				var item = GlobalRegistries.Items.Get(id);
 				if (item != null) {
 					return new ItemStack(item, (int)count);

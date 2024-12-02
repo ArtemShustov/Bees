@@ -27,6 +27,13 @@ namespace Game.Bees {
 		public virtual void SetHome(Beehive beehive) => AiBrain.SetHome(beehive);
 		public virtual void SetFlower(Flower flower) => AiBrain.SetFlower(flower);
 
+		public bool CanWork() {
+			if (Base == null || !Base.Behaviour) {
+				return true;
+			}
+			return Base.CanWork(Level.Time.Current);
+		}
+		
 		public override void WriteDataTo(DataTag root) {
 			Base.WriteDataTo(root);
 			base.WriteDataTo(root);
@@ -41,6 +48,12 @@ namespace Game.Bees {
 			writer.WriteLine($"> HasNektar: {Base.HasNektar}");
 			writer.WriteLine($"> Product: {Base.Product?.Id}");
 			writer.WriteLine($"> Productivity: {Base.Productivity?.Id}");
+		}
+
+		private void OnValidate() {
+			if (Base != null) {
+				SetBase(Base);
+			}
 		}
 	}
 }

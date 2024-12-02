@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Game.World {
 	public class Level: MonoBehaviour {
 		[field: SerializeField] public Ticker Ticker { get; private set; }
+		[field: SerializeField] public LevelTime Time { get; private set; }
 		
 		private List<Entity> _entities = new List<Entity>();
 		

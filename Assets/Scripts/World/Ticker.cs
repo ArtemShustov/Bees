@@ -14,10 +14,14 @@ namespace Game.World {
 		private void Update() {
 			_time += Time.deltaTime;
 			while (_time >= TickInterval) {
-				Tick?.Invoke();
-				AiTick?.Invoke();
+				TickAll();
 				_time -= TickInterval;
 			}
+		}
+		
+		public void TickAll() {
+			Tick?.Invoke();
+			AiTick?.Invoke();
 		}
 	}
 }

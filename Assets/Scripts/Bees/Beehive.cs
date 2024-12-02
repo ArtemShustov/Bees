@@ -12,10 +12,10 @@ namespace Game.Bees {
 		[Min(0), HideInPlayMode]
 		[SerializeField] private int _slotsCount = 1;
 		[SerializeField] private int _sleepTime = 60;
+		[SerializeField] private Storage _storage;
 		[SerializeField] private Bee _prefab;
 		
 		private BeeSlot[] _slots;
-		private Storage _storage = new Storage();
 		
 		public IReadOnlyCollection<BeeSlot> Slots => _slots;
 		public Storage Storage => _storage;
@@ -61,10 +61,14 @@ namespace Game.Bees {
 		private void OnSlotTimerEnd(BeeSlot slot) {
 			var bee = slot.Bee;
 
+			if (!bee.CanWork(Level.Time.Current)) {
+				return;
+			}
+
 			if (bee.HasNektar && bee.Product && bee.Productivity) {
 				var output = bee.GetOutput();
 				var count = bee.GetOutputCount();
-				_storage.Add(output, count);
+				_storage.TryAdd(output, count);
 			}
 			bee.HasNektar = false;
 			
@@ -74,14 +78,12 @@ namespace Game.Bees {
 
 		public override void WriteDataTo(DataTag root) {
 			base.WriteDataTo(root);
-			root.Set(nameof(_storage), _storage.ToTag());
 
 			var slots = _slots.Select(slot => slot.ToTag()).ToArray();
 			root.Set("Slots", slots);
 		}
 		public override void ReadDataFrom(DataTag root) {
 			base.ReadDataFrom(root);
-			_storage.FromTag(root.Get<DataTag>(nameof(_storage), null));
 
 			var slots = root.Get<DataTag[]>("Slots", null);
 			if (slots != null && slots.Length > 0) {

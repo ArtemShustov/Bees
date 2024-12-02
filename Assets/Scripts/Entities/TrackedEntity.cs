@@ -9,7 +9,9 @@ namespace Game.Entities {
 
 		public TrackedEntity(T entity) {
 			_entity	= entity;
-			Guid = _entity.Guid;
+			if (_entity != null) {
+				Guid = _entity.Guid;
+			}
 		}
 		public TrackedEntity(Guid guid) {
 			Guid = guid;

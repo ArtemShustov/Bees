@@ -55,6 +55,7 @@ MonoBehaviour:
   <Base>k__BackingField:
     <Product>k__BackingField: {fileID: 11400000, guid: b4d5d30642484e344b625070fe86a86e, type: 2}
     <Productivity>k__BackingField: {fileID: 11400000, guid: 66369d8e93f467a43a656ae8047aef9f, type: 2}
+    <Behaviour>k__BackingField: {fileID: 11400000, guid: e11df2979b42ddf49a8ea99f7c8bf6ea, type: 2}
     <HasNektar>k__BackingField: 0
   <View>k__BackingField: {fileID: 697193462519722490}
   <AiBrain>k__BackingField: {fileID: 253888311572263184}
@@ -245,7 +246,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 8d42bf122a172bb4486a29af501bad35, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

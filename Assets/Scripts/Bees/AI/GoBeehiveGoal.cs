@@ -10,8 +10,12 @@ namespace Game.Bees.AI {
 			_bee = bee;
 			_cooldown = cooldown;
 		}
+
+		private bool IsTimeToSleep() {
+			return !_bee.Bee.CanWork();
+		}
 		
-		public override bool CanStart() => _bee.Home.Get() && _bee.Timer >= _cooldown;
+		public override bool CanStart() => _bee.Home.Get() && (_bee.Timer >= _cooldown || IsTimeToSleep());
 		public override bool CanContinueRun() => _bee.Home.Get() && base.CanContinueRun();
 		public override void Start() {
 			SetTarget(_bee.Home.Get().transform);
