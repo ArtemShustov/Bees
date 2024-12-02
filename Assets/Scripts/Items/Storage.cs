@@ -52,6 +52,9 @@ namespace Game.Items {
 			}
 			return false;
 		}
+		public virtual bool TryAdd(ItemStack stack) {
+			return TryAdd(stack.Item, stack.Count);
+		}
 		protected virtual void Add(Item item, int count) {
 			if (TryGet(item.Id, out ItemStack stack)) {
 				stack.Add(count);

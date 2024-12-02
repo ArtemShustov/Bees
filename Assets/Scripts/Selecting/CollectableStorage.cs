@@ -1,4 +1,5 @@
 using System.Linq;
+using Game.Events;
 using Game.Items;
 using Game.Popups;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace Game.Selecting {
 			}
 			var items = _container.TakeAll();
 			_popupRoot.Hide();
+			EventBus<ItemsCollectedEvent>.Raise(new ItemsCollectedEvent(items));
 			Debug.Log($"Storage '{gameObject.name}' collected: {items.Sum(item => item.Count)}");
 			return true;
 		}
