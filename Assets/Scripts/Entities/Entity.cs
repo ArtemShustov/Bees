@@ -18,11 +18,6 @@ namespace Game.Entities {
 		public void SetGUID(Guid guid) {
 			this.Guid = guid;
 		}
-		public void Destory() {
-			Level.RemoveEntity(this);
-			Level = null;
-			Destroy(gameObject);
-		}
 		
 		public virtual void WriteDataTo(DataTag root) {
 			root.Set(nameof(Guid), this.Guid);

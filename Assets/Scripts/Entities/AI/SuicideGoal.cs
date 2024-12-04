@@ -12,7 +12,7 @@ namespace Game.Entities.AI {
 		public override bool CanContinueRun() => false;
 
 		public override void Start() {
-			_entity.Destory();
+			GameObject.Destroy(_entity.gameObject);
 			Debug.Log($"AI Suicide: {_entity.name}({_entity.Guid}) is {_entity.GetType()}");
 		}
 		public override void Stop() { }

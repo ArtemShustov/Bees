@@ -36,7 +36,6 @@ namespace Game.Bees {
 				return false;
 			}
 			slot.Set(bee.Base);
-			bee.Destory();
 			return true;
 		}
 		public Entity SpawnBee(BeeBase bee) {

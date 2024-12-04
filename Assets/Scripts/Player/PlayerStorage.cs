@@ -2,7 +2,7 @@ using Game.Events;
 using Game.Items;
 using UnityEngine;
 
-namespace Game {
+namespace Game.Player {
 	public class PlayerStorage: Storage {
 		private void OnItemsCollected(ItemsCollectedEvent eventData) {
 			foreach (var stack in eventData.Items) {

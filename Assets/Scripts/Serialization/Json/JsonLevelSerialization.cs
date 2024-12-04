@@ -35,16 +35,16 @@ namespace Game.Serialization.Json {
 			var root = JsonConvert.DeserializeObject<DataTag>(_save, _settings);
 			foreach (var entity in root.Get<List<DataTag>>("entities")) {
 				var id = entity.Get<string>(nameof(SerializableObject.Id), null);
-				var prefab = GlobalRegistries.Entities.Get(id);
-				if (prefab == null) {
+				var entityType = GlobalRegistries.Entities.Get(id);
+				if (entityType == null) {
 					Debug.LogWarning($"Can't load entity {id} from registry.");
 					continue;
 				}
-				var instance = Instantiate(prefab);
+				var instance = entityType.SpawnAt(_level.transform);
 				instance.ReadFrom(entity);
 				_level.AddEntity(instance);
 			}
-			Debug.Log("Game laoded!");
+			Debug.Log("Game loaded!");
 		}
 		private void Save() {
 			var root = new DataTag();

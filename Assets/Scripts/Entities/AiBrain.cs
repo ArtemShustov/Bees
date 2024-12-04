@@ -7,6 +7,8 @@ namespace Game.Entities {
 		public GoalSelector GoalSelector { get; private set; } = new GoalSelector();
 		protected Ticker Ticker { get; private set; }
 
+		private bool _subscribed = false;
+		
 		protected virtual void OnTick() {}
 		protected virtual void OnAiTick() {
 			GoalSelector.OnTick();
@@ -17,24 +19,25 @@ namespace Game.Entities {
 			Ticker = ticker;
 			Subscribe();
 		}
-
 		private void Subscribe() {
-			if (Ticker != null) {
+			if (Ticker != null && !_subscribed && enabled) {
 				Ticker.Tick += OnTick;
 				Ticker.AiTick += OnAiTick;
+				_subscribed = true;
 			}
 		}
 		private void Unsubscribe() {
-			if (Ticker != null) {
+			if (Ticker != null && _subscribed) {
 				Ticker.Tick -= OnTick;
 				Ticker.AiTick -= OnAiTick;
+				_subscribed = false;
 			}
 		}
 		
-		private void OnEnable() {
+		protected virtual void OnEnable() {
 			Subscribe();
 		}
-		private void OnDisable() {
+		protected virtual void OnDisable() {
 			Unsubscribe();
 		}
 	}

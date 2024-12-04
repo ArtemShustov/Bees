@@ -2,7 +2,7 @@ using Game.Items;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI {
+namespace Game.UI.Inventory {
 	public class ItemIcon: MonoBehaviour {
 		[SerializeField] private Image _image;
 		[SerializeField] private Item _item;
@@ -18,7 +18,9 @@ namespace Game.UI {
 		}
 
 		private void OnValidate() {
-			SetItem(_item);
+			if (_item) {
+				SetItem(_item);
+			}
 		}
 	}
 }

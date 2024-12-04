@@ -1,5 +1,6 @@
 using Game.Entities;
 using Game.Entities.AI;
+using UnityEngine;
 
 namespace Game.Bees.AI {
 	public class GoBeehiveGoal: GoObjectGoal {
@@ -25,6 +26,7 @@ namespace Game.Bees.AI {
 			base.OnTick();
 			if (IsTargetReached()) {
 				_bee.Home.Get().AddBee(_bee.Bee);
+				GameObject.Destroy(_bee.Bee.gameObject);
 			}
 		}
 	}
