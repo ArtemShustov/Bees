@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.EntityBuying.UI {
+namespace Game.GameFlow.EntityBuying.UI {
 	public class BuyEntryView: MonoBehaviour {
 		[SerializeField] private Image _icon;
 		[SerializeField] private TMP_Text _name;

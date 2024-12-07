@@ -1,12 +1,11 @@
 using UnityEngine;
 
 namespace Game.UI.Inventory {
-	public class PlayerInventotyPanel: UIPanel {
+	public class PlayerInventoryPanel: UIPanel {
 		[SerializeField] private StorageView _view;
 		[SerializeField] private PanelSwitcher _switcher;
 
-		public void SwitchToThis() {
-			_switcher.Switch(this);
+		private void OnEnable() {
 			_view.Show();
 		}
 	}

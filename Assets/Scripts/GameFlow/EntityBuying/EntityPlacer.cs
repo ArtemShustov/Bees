@@ -5,11 +5,11 @@ using Game.World;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Game.EntityBuying {
+namespace Game.GameFlow.EntityBuying {
 	public class EntityPlacer: MonoBehaviour {
 		[SerializeField] private EntityType _entity;
 		[SerializeField] private InputAction _pointerPosition;
-		[SerializeField] private InputAction _pointerClick;
+		[SerializeField] private InputAction _place;
 		[SerializeField] private Level _level;
 		[SerializeField] private Camera _camera;
 
@@ -33,14 +33,14 @@ namespace Game.EntityBuying {
 			}
 		}
 		private void OnEnable() {
-			_pointerClick.Enable();
+			_place.Enable();
 			_pointerPosition.Enable();
-			_pointerClick.performed += OnClick;
+			_place.performed += OnClick;
 		}
 		private void OnDisable() {
-			_pointerClick.Disable();
+			_place.Disable();
 			_pointerPosition.Disable();
-			_pointerClick.performed -= OnClick;
+			_place.performed -= OnClick;
 		}
 	}
 }

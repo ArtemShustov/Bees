@@ -2,7 +2,7 @@ using System;
 using Game.Player;
 using UnityEngine;
 
-namespace Game.EntityBuying.UI {
+namespace Game.GameFlow.EntityBuying.UI {
 	public class BuyListView: MonoBehaviour {
 		[SerializeField] private BuyEntryView _prefab;
 		[SerializeField] private Transform _container;
